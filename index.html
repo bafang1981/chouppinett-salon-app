@@ -1,0 +1,2199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#141210">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="StrandPro">
+<meta name="description" content="StrandPro — Professional Salon Management">
+<title>StrandPro — Salon Management</title>
+<script>
+const manifestData={name:"StrandPro",short_name:"StrandPro",description:"StrandPro · Salon Management",start_url:"./",display:"standalone",background_color:"#0D0B09",theme_color:"#141210",orientation:"any",icons:[{src:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' fill='%23141210'/%3E%3Ctext x='50%25' y='55%25' font-size='110' text-anchor='middle' dominant-baseline='middle'%3E%E2%9C%82%EF%B8%8F%3C/text%3E%3C/svg%3E",sizes:"192x192",type:"image/svg+xml"},{src:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%23141210'/%3E%3Ctext x='50%25' y='55%25' font-size='300' text-anchor='middle' dominant-baseline='middle'%3E%E2%9C%82%EF%B8%8F%3C/text%3E%3C/svg%3E",sizes:"512x512",type:"image/svg+xml"}]};
+const b=new Blob([JSON.stringify(manifestData)],{type:'application/json'});document.write(`<link rel="manifest" href="${URL.createObjectURL(b)}">`);
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C9922A;--gold-light:#E5B84A;--gold-dim:#7a5a18;--gold-glow:rgba(201,146,42,0.15);--bg:#0D0B09;--bg2:#141210;--bg3:#1c1915;--bg4:#231f1a;--surface:#1e1b17;--surface2:#28241f;--border:#2e2920;--border2:#3d3730;--text:#f0e8d8;--text2:#b8a88a;--text3:#7a6e5e;--danger:#c0392b;--danger-dim:#7a1f18;--success:#27ae60;--success-dim:#1a5e38;--warn:#e67e22;--warn-dim:#7a4010;--info:#2980b9;--sidebar-w:240px;--topbar-h:56px;--mobile-nav-h:60px;--safe-bottom:env(safe-area-inset-bottom,0px)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;overflow:hidden;height:100dvh;-webkit-tap-highlight-color:transparent}
+
+/* INSTALL BANNER */
+#installBanner{display:none;align-items:center;justify-content:space-between;gap:12px;background:#0f2a1a;border-bottom:1px solid #1e5c34;padding:10px 16px;font-size:.8rem;flex-shrink:0}
+#installBanner.show{display:flex}
+.install-text{color:#7ecba1;flex:1}.install-text strong{color:#2ecc71}
+.install-btn{background:#27ae60;color:#fff;border:none;border-radius:5px;padding:6px 14px;font-size:.78rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;flex-shrink:0}
+.install-dismiss{background:none;border:none;color:#7ecba1;font-size:1.1rem;cursor:pointer;padding:2px 6px}
+
+/* TRIAL BANNER */
+#trialBanner{display:none;align-items:center;justify-content:center;gap:12px;background:linear-gradient(90deg,#1a1208,#2a1e08,#1a1208);border-bottom:1px solid var(--gold-dim);padding:8px 16px;font-size:.8rem;flex-shrink:0;flex-wrap:wrap}
+#trialBanner.show{display:flex}
+.banner-text{color:var(--text2)}.banner-text strong{color:var(--gold-light)}
+.banner-cta{background:var(--gold);color:#0d0b09;border:none;border-radius:5px;padding:5px 12px;font-size:.75rem;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;white-space:nowrap}
+
+/* NOTIFICATION BELL */
+#notifBell{position:relative;cursor:pointer;width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:8px;border:1px solid var(--border2);background:var(--bg4);font-size:1rem;flex-shrink:0;transition:border-color .15s}
+#notifBell:hover{border-color:var(--gold-dim)}
+#notifCount{display:none;position:absolute;top:-5px;right:-5px;background:var(--danger);color:#fff;font-size:.6rem;font-weight:700;width:16px;height:16px;border-radius:50%;align-items:center;justify-content:center}
+#notifCount.show{display:flex}
+#notifDropdown{display:none;position:absolute;top:calc(var(--topbar-h) + 4px);right:16px;width:320px;max-height:420px;overflow-y:auto;background:var(--bg3);border:1px solid var(--border2);border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.5);z-index:500}
+#notifDropdown.open{display:block}
+.notif-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px;border-bottom:1px solid var(--border)}
+.notif-header-title{font-family:'Cormorant Garamond',serif;font-size:1rem;color:var(--gold-light);font-weight:600}
+.notif-clear{font-size:.72rem;color:var(--text3);cursor:pointer}.notif-clear:hover{color:var(--gold-light)}
+.notif-item{display:flex;gap:10px;align-items:flex-start;padding:12px 16px;border-bottom:1px solid var(--border);transition:background .12s;cursor:pointer}
+.notif-item:last-child{border-bottom:none}.notif-item:hover{background:var(--bg4)}.notif-item.unread{background:rgba(201,146,42,0.04)}
+.notif-dot{width:7px;height:7px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:5px}.notif-dot.read{background:var(--border2)}
+.notif-body{flex:1}.notif-msg{font-size:.8rem;color:var(--text);line-height:1.4}.notif-time{font-size:.68rem;color:var(--text3);margin-top:3px}
+.notif-empty{text-align:center;padding:28px 16px;color:var(--text3);font-size:.82rem}
+
+/* APP SHELL */
+.app-shell{display:flex;flex:1;overflow:hidden;position:relative}
+
+/* SIDEBAR */
+.sidebar{width:var(--sidebar-w);background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;height:100%;overflow-y:auto;transition:transform .25s;z-index:200}
+.sidebar-brand{padding:20px 16px 16px;border-bottom:1px solid var(--border)}
+.brand-name{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:700;color:var(--gold-light);line-height:1.2}
+.brand-sub{font-size:.65rem;color:var(--text3);letter-spacing:.12em;text-transform:uppercase;margin-top:3px}
+.sidebar-nav{padding:10px 0;flex:1}
+.nav-section{font-size:.58rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text3);padding:12px 16px 5px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:11px 16px;cursor:pointer;border-left:3px solid transparent;color:var(--text2);font-size:.85rem;font-weight:400;transition:all .15s;user-select:none}
+.nav-item:hover{background:var(--bg3);color:var(--text)}
+.nav-item.active{background:var(--bg4);color:var(--gold-light);border-left-color:var(--gold);font-weight:500}
+.nav-item.owner-only{display:flex}.nav-item.owner-only.hidden{display:none!important}
+.nav-icon{font-size:1rem;width:20px;text-align:center}
+.sidebar-footer{padding:12px 14px;border-top:1px solid var(--border)}
+.sub-status-pill{display:flex;align-items:center;gap:8px;background:var(--bg4);border:1px solid var(--border2);border-radius:8px;padding:9px 11px;cursor:pointer;transition:border-color .15s}
+.sub-status-pill:hover{border-color:var(--gold-dim)}
+.sub-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.sub-dot.trial{background:var(--warn);box-shadow:0 0 6px var(--warn)}.sub-dot.active{background:var(--success);box-shadow:0 0 6px var(--success)}.sub-dot.expired{background:var(--danger);box-shadow:0 0 6px var(--danger)}
+.sub-pill-text{font-size:.7rem;line-height:1.3}.sub-pill-label{color:var(--text3);font-size:.62rem;text-transform:uppercase;letter-spacing:.08em}.sub-pill-value{color:var(--text2);font-weight:500}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:190}
+.sidebar-overlay.show{display:block}
+
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;height:100%;overflow:hidden;position:relative}
+.topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 16px;height:var(--topbar-h);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;gap:10px}
+.topbar-left{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
+.topbar-title{font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.topbar-date{font-size:.75rem;color:var(--text3);white-space:nowrap;display:none}
+.hamburger{display:none;background:none;border:none;color:var(--text2);font-size:1.3rem;cursor:pointer;padding:4px 6px;border-radius:6px;flex-shrink:0}
+.topbar-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.page{flex:1;overflow-y:auto;padding:20px;display:none;-webkit-overflow-scrolling:touch}
+.page.active{display:block}
+
+/* ROLE ACCESS */
+.owner-section{display:block}.owner-section.hidden{display:none!important}
+
+/* PAYWALL */
+#paywallScreen{display:none;position:fixed;inset:0;background:var(--bg);z-index:2000;overflow-y:auto;align-items:flex-start;justify-content:center;flex-direction:column}
+#paywallScreen.show{display:flex}
+.paywall-inner{width:100%;max-width:820px;padding:40px 20px;margin:0 auto}
+.paywall-logo{text-align:center;margin-bottom:32px}
+.paywall-logo-name{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:700;color:var(--gold-light)}
+.paywall-logo-sub{font-size:.65rem;letter-spacing:.18em;text-transform:uppercase;color:var(--text3);margin-top:4px}
+.paywall-headline{font-family:'Cormorant Garamond',serif;font-size:1.9rem;font-weight:600;text-align:center;color:var(--text);margin-bottom:8px}
+.paywall-sub{text-align:center;color:var(--text3);font-size:.85rem;margin-bottom:32px}
+.plan-cards{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:28px}
+.plan-card{background:var(--surface);border:1px solid var(--border2);border-radius:14px;padding:24px 20px;position:relative;cursor:pointer;transition:border-color .2s,transform .2s}
+.plan-card:hover{transform:translateY(-2px)}
+.plan-card.selected{border-color:var(--gold);background:linear-gradient(135deg,var(--surface),#221a09);box-shadow:0 0 32px var(--gold-glow)}
+.plan-card.popular::before{content:'★ BEST VALUE';position:absolute;top:-1px;right:20px;background:var(--gold);color:#0d0b09;font-size:.58rem;font-weight:700;letter-spacing:.1em;padding:4px 10px;border-radius:0 0 7px 7px}
+.plan-name{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:600;color:var(--text);margin-bottom:4px}
+.plan-price{font-family:'Cormorant Garamond',serif;font-size:2.4rem;font-weight:700;color:var(--gold-light);line-height:1;margin-bottom:4px}
+.plan-price span{font-size:.9rem;color:var(--text3);font-family:'DM Sans',sans-serif;font-weight:400}
+.plan-note{font-size:.72rem;color:var(--text3);margin-bottom:16px}
+.plan-features{list-style:none}.plan-features li{font-size:.8rem;color:var(--text2);padding:4px 0;display:flex;align-items:center;gap:7px}
+.plan-features li::before{content:'✓';color:var(--gold);font-weight:700}
+.plan-select-ring{width:18px;height:18px;border-radius:50%;border:2px solid var(--border2);position:absolute;top:16px;right:16px;transition:all .15s}
+.plan-card.selected .plan-select-ring{border-color:var(--gold);background:var(--gold);box-shadow:inset 0 0 0 3px var(--surface)}
+.paywall-subscribe-btn{display:block;width:100%;padding:15px;background:var(--gold);color:#0d0b09;border:none;border-radius:10px;font-size:.95rem;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;transition:background .15s;letter-spacing:.02em}
+.paywall-subscribe-btn:hover{background:var(--gold-light)}
+.paywall-legal{text-align:center;font-size:.68rem;color:var(--text3);margin-top:12px;line-height:1.6}
+
+/* MANAGE SUB MODAL */
+#manageSubModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:1500;align-items:center;justify-content:center}
+#manageSubModal.open{display:flex}
+.manage-sub-box{background:var(--bg3);border:1px solid var(--border2);border-radius:14px;padding:28px;width:440px;max-width:95vw}
+.manage-sub-title{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:600;color:var(--gold-light);margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.sub-info-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);font-size:.83rem}
+.sub-info-row .label{color:var(--text3)}.sub-info-row .value{color:var(--text);font-weight:500}
+.sub-actions{display:flex;gap:8px;margin-top:20px;justify-content:flex-end;flex-wrap:wrap}
+
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px}
+.card-title{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:600;color:var(--gold-light);margin-bottom:14px;display:flex;align-items:center;gap:7px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+
+/* STAT CARDS */
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;position:relative;overflow:hidden}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gold)}
+.stat-label{font-size:.67rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:6px}
+.stat-value{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:700;color:var(--gold-light);line-height:1}
+.stat-sub{font-size:.68rem;color:var(--text3);margin-top:4px}
+.stat-icon{position:absolute;right:12px;top:12px;font-size:1.3rem;opacity:.15}
+
+/* TABLES */
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:.8rem}
+thead tr{border-bottom:1px solid var(--border2)}
+th{text-align:left;padding:9px 10px;font-size:.65rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);font-weight:500;white-space:nowrap}
+td{padding:9px 10px;color:var(--text);border-bottom:1px solid var(--border);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--bg4)}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:20px;font-size:.65rem;font-weight:500;letter-spacing:.04em;white-space:nowrap}
+.badge-warn{background:var(--warn-dim);color:var(--warn)}.badge-danger{background:var(--danger-dim);color:#e74c3c}
+.badge-success{background:var(--success-dim);color:#2ecc71}.badge-gold{background:var(--gold-dim);color:var(--gold-light)}
+.badge-info{background:#1a3a5e;color:#5dade2}.badge-grey{background:var(--bg4);color:var(--text3)}
+.badge-green{background:#0d3320;color:#25d366}.badge-purple{background:#2a1a4a;color:#b07ee8}
+
+/* FORMS */
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.form-row.cols-3{grid-template-columns:1fr 1fr 1fr}.form-row.cols-1{grid-template-columns:1fr}
+.form-group{display:flex;flex-direction:column;gap:4px}
+.form-group label{font-size:.68rem;letter-spacing:.07em;text-transform:uppercase;color:var(--text3)}
+.form-group input,.form-group select,.form-group textarea{background:var(--bg4);border:1px solid var(--border2);border-radius:6px;color:var(--text);padding:8px 10px;font-size:.83rem;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .15s;-webkit-appearance:none;appearance:none}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--gold-dim)}
+.form-group select option{background:var(--bg4)}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:5px;padding:8px 14px;border-radius:6px;font-size:.82rem;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;border:none;transition:all .15s;white-space:nowrap}
+.btn-gold{background:var(--gold);color:#0d0b09}.btn-gold:hover{background:var(--gold-light)}
+.btn-outline{background:transparent;border:1px solid var(--border2);color:var(--text2)}.btn-outline:hover{border-color:var(--gold-dim);color:var(--gold-light)}
+.btn-danger{background:var(--danger-dim);color:#e74c3c;border:1px solid var(--danger-dim)}.btn-danger:hover{background:var(--danger);color:#fff}
+.btn-whatsapp{background:#128c3a;color:#fff}.btn-whatsapp:hover{background:#25d366}
+.btn-email{background:#1a3a5e;color:#5dade2}.btn-email:hover{background:#2980b9;color:#fff}
+.btn-purple{background:#2a1a4a;color:#b07ee8;border:1px solid #3a2a5a}.btn-purple:hover{background:#3a2a5a;color:#c99af0}
+.btn-sm{padding:5px 9px;font-size:.73rem}.btn-icon{padding:6px 7px}
+.reminder-group{display:flex;gap:4px;flex-wrap:wrap}
+
+/* MODALS */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:1000;align-items:flex-end;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:var(--bg3);border:1px solid var(--border2);border-radius:16px 16px 0 0;padding:24px 20px 32px;width:100%;max-width:640px;max-height:92dvh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.modal-title{font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:600;color:var(--gold-light);margin-bottom:18px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:18px;padding-top:14px;border-top:1px solid var(--border);flex-wrap:wrap}
+
+/* UTILITIES */
+.flex{display:flex}.flex-between{display:flex;align-items:center;justify-content:space-between}.flex-center{display:flex;align-items:center}
+.gap-8{gap:8px}.gap-10{gap:10px}.gap-12{gap:12px}
+.mb-14{margin-bottom:14px}.mb-16{margin-bottom:16px}.mb-20{margin-bottom:20px}
+.text-gold{color:var(--gold-light)}.text-muted{color:var(--text3)}.text-sm{font-size:.78rem}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+.section-title{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:600;color:var(--text)}
+.filter-bar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
+.filter-bar input,.filter-bar select{background:var(--bg4);border:1px solid var(--border2);border-radius:6px;color:var(--text);padding:7px 10px;font-size:.8rem;font-family:'DM Sans',sans-serif;outline:none;-webkit-appearance:none}
+.quick-actions{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.quick-btn{display:flex;flex-direction:column;align-items:center;gap:5px;padding:14px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;cursor:pointer;color:var(--text2);font-size:.74rem;font-weight:500;transition:all .15s;text-align:center}
+.quick-btn:hover{border-color:var(--gold-dim);color:var(--gold-light);background:var(--bg4)}.quick-btn-icon{font-size:1.4rem}
+.empty-state{text-align:center;padding:40px 16px;color:var(--text3)}.empty-state .e-icon{font-size:2.2rem;margin-bottom:10px;opacity:.4}.empty-state p{font-size:.82rem}
+
+/* MOBILE NAV */
+.mobile-nav{display:none;background:var(--bg2);border-top:1px solid var(--border);height:var(--mobile-nav-h);padding-bottom:var(--safe-bottom);flex-shrink:0;z-index:100}
+.mobile-nav-inner{display:flex;height:100%}
+.mobile-nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;color:var(--text3);font-size:.55rem;font-weight:500;border-top:2px solid transparent;transition:all .15s;padding:6px 2px;user-select:none;-webkit-tap-highlight-color:transparent}
+.mobile-nav-item.active{color:var(--gold-light);border-top-color:var(--gold)}.mobile-nav-item .m-icon{font-size:1.1rem}
+.mobile-nav-item.owner-only{display:flex}.mobile-nav-item.owner-only.hidden{display:none!important}
+
+/* TASK PANEL */
+.task-item{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)}
+.task-item:last-child{border-bottom:none}
+.task-check{width:18px;height:18px;border-radius:4px;border:2px solid var(--border2);background:var(--bg4);cursor:pointer;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;font-size:.7rem}
+.task-check.done{background:var(--gold-dim);border-color:var(--gold)}
+.task-body{flex:1}.task-title{font-size:.83rem;color:var(--text)}.task-title.done{text-decoration:line-through;color:var(--text3)}.task-meta{font-size:.7rem;color:var(--text3);margin-top:2px}
+
+/* AUTH SCREEN */
+#authScreen{display:none;position:fixed;inset:0;background:radial-gradient(ellipse at 30% 20%,#1a1208 0%,var(--bg) 60%);z-index:3000;align-items:center;justify-content:center;overflow-y:auto}
+#authScreen.show{display:flex}
+.auth-box{width:100%;max-width:420px;padding:36px 28px;margin:20px;background:var(--surface);border:1px solid var(--border2);border-radius:18px;box-shadow:0 24px 64px rgba(0,0,0,.7);animation:fadeIn .35s ease}
+.auth-logo{text-align:center;margin-bottom:24px}.auth-logo-icon{font-size:2.2rem;margin-bottom:6px}
+.auth-logo-name{font-family:'Cormorant Garamond',serif;font-size:1.55rem;font-weight:700;color:var(--gold-light)}
+.auth-logo-sub{font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text3);margin-top:3px}
+.auth-tabs{display:flex;background:var(--bg4);border-radius:8px;padding:3px;margin-bottom:22px}
+.auth-tab{flex:1;text-align:center;padding:8px;border-radius:6px;font-size:.83rem;font-weight:500;color:var(--text3);cursor:pointer;transition:all .15s}
+.auth-tab.active{background:var(--surface2);color:var(--gold-light)}
+.auth-panel{display:none}.auth-panel.active{display:block}
+.auth-panel-title{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:600;color:var(--text);margin-bottom:16px}
+.auth-group{display:flex;flex-direction:column;gap:4px;margin-bottom:13px}
+.auth-group label{font-size:.67rem;letter-spacing:.07em;text-transform:uppercase;color:var(--text3)}
+.auth-group input,.auth-group select{background:var(--bg4);border:1px solid var(--border2);border-radius:8px;color:var(--text);padding:11px 14px;font-size:.87rem;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .15s;width:100%;-webkit-appearance:none}
+.auth-group input:focus,.auth-group select:focus{border-color:var(--gold-dim)}
+.auth-btn{width:100%;padding:13px;background:var(--gold);color:#0d0b09;border:none;border-radius:8px;font-size:.88rem;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;margin-top:4px;transition:background .15s}
+.auth-btn:hover{background:var(--gold-light)}
+.auth-footer{text-align:center;margin-top:13px;font-size:.76rem;color:var(--text3)}
+.auth-footer a{color:var(--gold-light);cursor:pointer}.auth-footer a:hover{text-decoration:underline}
+.auth-msg{padding:9px 12px;border-radius:7px;font-size:.79rem;margin-bottom:13px;display:none}
+.auth-msg.show{display:block}.auth-msg.error{background:var(--danger-dim);border:1px solid var(--danger);color:#e74c3c}.auth-msg.success{background:var(--success-dim);border:1px solid var(--success);color:#2ecc71}
+.pw-bar-wrap{height:4px;border-radius:2px;background:var(--border2);margin-top:5px;overflow:hidden}.pw-bar{height:100%;border-radius:2px;width:0;transition:width .3s,background .3s}
+
+/* USER MENU */
+.user-menu-btn{display:flex;align-items:center;gap:6px;background:var(--bg4);border:1px solid var(--border2);border-radius:7px;padding:5px 10px;cursor:pointer;font-size:.76rem;color:var(--text2);transition:border-color .15s;flex-shrink:0}
+.user-menu-btn:hover{border-color:var(--gold-dim);color:var(--gold-light)}
+.user-avatar{width:24px;height:24px;border-radius:50%;background:var(--gold-dim);color:var(--gold-light);font-size:.68rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+#userDropdown{display:none;position:absolute;top:calc(var(--topbar-h) + 4px);right:16px;width:220px;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;box-shadow:0 8px 28px rgba(0,0,0,.5);z-index:500;overflow:hidden}
+#userDropdown.open{display:block}
+.user-dd-hdr{padding:13px 16px 10px;border-bottom:1px solid var(--border)}
+.user-dd-name{font-weight:600;font-size:.87rem;color:var(--text)}.user-dd-role{font-size:.68rem;color:var(--text3);margin-top:2px}
+.user-dd-item{display:flex;align-items:center;gap:9px;padding:10px 16px;cursor:pointer;font-size:.82rem;color:var(--text2);transition:background .12s}
+.user-dd-item:hover{background:var(--bg4);color:var(--text)}.user-dd-item.danger{color:#e74c3c}.user-dd-item.danger:hover{background:var(--danger-dim)}
+
+/* CRM CLIENT PROFILE */
+.client-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;transition:border-color .15s;cursor:pointer}
+.client-card:hover{border-color:var(--gold-dim)}
+.client-avatar{width:40px;height:40px;border-radius:50%;background:var(--gold-dim);color:var(--gold-light);font-size:1rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.client-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+
+/* INVOICE PRINT */
+@media print{
+  body *{visibility:hidden}
+  #invoicePrint,#invoicePrint *{visibility:visible}
+  #invoicePrint{position:fixed;inset:0;background:#fff;color:#000;padding:40px;font-family:'DM Sans',sans-serif}
+}
+.invoice-box{background:#fff;color:#1a1a1a;padding:32px;border-radius:8px;font-size:.85rem;line-height:1.6}
+.invoice-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid #eee}
+.invoice-logo{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:700;color:#8a5a10}
+.invoice-table{width:100%;border-collapse:collapse;margin:16px 0}
+.invoice-table th{background:#f5f5f5;padding:8px 12px;text-align:left;font-size:.78rem;border:1px solid #e0e0e0}
+.invoice-table td{padding:8px 12px;border:1px solid #e0e0e0}
+.invoice-total{text-align:right;font-size:1.1rem;font-weight:700;margin-top:12px}
+
+/* REORDER PANEL */
+.reorder-item{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
+.reorder-item:last-child{border-bottom:none}
+
+/* PAYROLL */
+.payroll-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:.83rem}
+.payroll-row:last-child{border-bottom:none}
+
+/* BOOKING PAGE */
+#bookingPage{display:none;position:fixed;inset:0;background:var(--bg);z-index:4000;overflow-y:auto}
+#bookingPage.show{display:block}
+.booking-wrap{max-width:480px;margin:0 auto;padding:28px 20px}
+.booking-title{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:700;color:var(--gold-light);text-align:center;margin-bottom:6px}
+.booking-sub{text-align:center;color:var(--text3);font-size:.82rem;margin-bottom:28px}
+.booking-field{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+.booking-field label{font-size:.68rem;letter-spacing:.07em;text-transform:uppercase;color:var(--text3)}
+.booking-field input,.booking-field select,.booking-field textarea{background:var(--bg4);border:1px solid var(--border2);border-radius:8px;color:var(--text);padding:11px 14px;font-size:.87rem;font-family:'DM Sans',sans-serif;outline:none;width:100%;-webkit-appearance:none}
+.booking-field input:focus,.booking-field select:focus{border-color:var(--gold-dim)}
+.booking-submit{width:100%;padding:14px;background:var(--gold);color:#0d0b09;border:none;border-radius:8px;font-size:.9rem;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;margin-top:8px}
+.booking-submit:hover{background:var(--gold-light)}
+.booking-success{text-align:center;padding:32px 16px;display:none}
+.booking-success.show{display:block}
+
+/* ── ROLES MANAGER ────────────────────────────────────── */
+.role-chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 10px; border-radius: 20px;
+  font-size: .68rem; font-weight: 500;
+  background: var(--gold-dim); color: var(--gold-light);
+  border: 1px solid rgba(201,146,42,.25);
+}
+.role-chip.default { background: #1a3a5e; color: #5dade2; border-color: rgba(41,128,185,.25); }
+.role-chip.custom  { background: #2a1a4a; color: #b07ee8; border-color: rgba(176,126,232,.25); }
+.role-tag-wrap { display: flex; flex-wrap: wrap; gap: 5px; }
+.roles-list { display: flex; flex-direction: column; gap: 8px; }
+.role-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 9px 12px; background: var(--bg4);
+  border: 1px solid var(--border2); border-radius: 8px;
+  transition: border-color .15s;
+}
+.role-row:hover { border-color: var(--gold-dim); }
+.role-row-name { font-size: .85rem; font-weight: 500; display: flex; align-items: center; gap: 8px; }
+.role-row-type { font-size: .65rem; color: var(--text3); letter-spacing: .06em; }
+.add-role-row { display: flex; gap: 8px; margin-top: 12px; }
+.add-role-row input {
+  flex: 1; background: var(--bg4); border: 1px solid var(--border2);
+  border-radius: 7px; color: var(--text); padding: 8px 12px;
+  font-size: .83rem; font-family: 'DM Sans', sans-serif; outline: none;
+  transition: border-color .15s;
+}
+.add-role-row input:focus { border-color: var(--gold-dim); }
+
+/* Staff card with role checklist */
+.staff-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 14px; transition: border-color .15s;
+}
+.staff-card:hover { border-color: var(--border2); }
+.staff-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.staff-card-name { font-weight: 600; font-size: .88rem; }
+.staff-card-contact { font-size: .75rem; color: var(--text3); margin-top: 2px; }
+.role-checklist { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); display: none; }
+.role-checklist.open { display: block; }
+.role-checklist-title { font-size: .65rem; letter-spacing: .1em; text-transform: uppercase; color: var(--text3); margin-bottom: 8px; }
+.role-check-item {
+  display: flex; align-items: center; gap: 9px;
+  padding: 6px 0; cursor: pointer; user-select: none;
+}
+.role-check-item:hover .rcb { border-color: var(--gold-dim); }
+.rcb {
+  width: 18px; height: 18px; border-radius: 4px;
+  border: 2px solid var(--border2); background: var(--bg4);
+  flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+  font-size: .7rem; transition: all .15s;
+}
+.rcb.checked { background: var(--gold-dim); border-color: var(--gold); color: var(--gold-light); }
+.rcb-label { font-size: .82rem; color: var(--text2); }
+.staff-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 12px; }
+@media(max-width:700px){ .staff-grid { grid-template-columns: 1fr; } }
+</style>
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+@keyframes pulse-warn{0%,100%{opacity:1}50%{opacity:.6}}
+.fade-in{animation:fadeIn .35s ease forwards}.slide-up{animation:slideUp .3s ease forwards}.pulse-warn{animation:pulse-warn 2s infinite}
+
+/* TOAST */
+#toastContainer{position:fixed;bottom:calc(var(--mobile-nav-h) + 12px);right:16px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{background:var(--surface2);border:1px solid var(--gold-dim);color:var(--text);padding:11px 18px;border-radius:8px;font-size:.82rem;box-shadow:0 4px 20px rgba(0,0,0,.4);animation:fadeIn .3s ease;pointer-events:none;max-width:320px}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-track{background:var(--bg2)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+
+/* RESPONSIVE */
+@media(max-width:900px){.grid-5{grid-template-columns:repeat(3,1fr)}.grid-4{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){
+  :root{--sidebar-w:260px}
+  .sidebar{position:fixed;top:0;left:0;height:100dvh;transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .hamburger{display:flex!important;align-items:center;justify-content:center}
+  .topbar-date{display:none!important}
+  .mobile-nav{display:flex}
+  .page{padding:14px}
+  .grid-2{grid-template-columns:1fr}.grid-3{grid-template-columns:1fr}
+  .grid-4{grid-template-columns:repeat(2,1fr)}.grid-5{grid-template-columns:repeat(2,1fr)}
+  .exp-stat-row{grid-template-columns:repeat(2,1fr)}
+  .quick-actions{grid-template-columns:repeat(2,1fr)}
+  .form-row{grid-template-columns:1fr}.form-row.cols-3{grid-template-columns:1fr}
+  .plan-cards{grid-template-columns:1fr}
+  .client-grid{grid-template-columns:1fr 1fr}
+  .modal{border-radius:20px 20px 0 0;padding:20px 16px calc(24px + var(--safe-bottom))}
+}
+@media(min-width:701px){
+  .modal{border-radius:12px;max-height:88dvh}
+  .modal-overlay{align-items:center}
+  .topbar-date{display:block}
+  .hamburger{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- AUTH SCREEN -->
+<div id="authScreen" class="show">
+  <div class="auth-box">
+    <div class="auth-logo">
+      <div class="auth-logo-icon">✂️</div>
+      <div class="auth-logo-name">StrandPro</div>
+      <div class="auth-logo-sub">Professional Salon Management</div>
+    </div>
+    <div class="auth-tabs">
+      <div class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Sign In</div>
+      <div class="auth-tab" id="tab-signup" onclick="switchAuthTab('signup')">Sign Up</div>
+    </div>
+    <!-- LOGIN -->
+    <div class="auth-panel active" id="panel-login">
+      <div class="auth-panel-title">Welcome back</div>
+      <div class="auth-msg error" id="loginErr"></div>
+      <div class="auth-group"><label>Username</label><input type="text" id="loginUser" placeholder="Your username" autocomplete="username"></div>
+      <div class="auth-group"><label>Password</label><input type="password" id="loginPass" placeholder="Your password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"></div>
+      <button class="auth-btn" onclick="doLogin()">Sign In →</button>
+      <div class="auth-footer"><a onclick="switchAuthTab('reset')">Forgot password?</a></div>
+    </div>
+    <!-- SIGNUP -->
+    <div class="auth-panel" id="panel-signup">
+      <div class="auth-panel-title">Create account</div>
+      <div class="auth-msg error" id="signupErr"></div>
+      <div class="auth-msg success" id="signupOk"></div>
+      <div class="auth-group"><label>Salon Name</label><input type="text" id="signupSalon" placeholder="e.g. Glamour Braiding Studio"></div>
+      <div class="auth-group"><label>Your Full Name</label><input type="text" id="signupName" placeholder="Owner / manager name"></div>
+      <div class="auth-group"><label>Username</label><input type="text" id="signupUser" placeholder="Choose a username (min 3 chars)"></div>
+      <div class="auth-group"><label>Role</label>
+        <select id="signupRole"><option value="owner">Owner / Manager</option><option value="staff">Staff</option></select>
+      </div>
+      <div class="auth-group"><label>Password</label>
+        <input type="password" id="signupPass" placeholder="At least 6 characters" oninput="checkPwStrength(this.value)">
+        <div class="pw-bar-wrap"><div class="pw-bar" id="pwBar"></div></div>
+      </div>
+      <div class="auth-group"><label>Confirm Password</label><input type="password" id="signupPass2" placeholder="Repeat password" onkeydown="if(event.key==='Enter')doSignup()"></div>
+      <button class="auth-btn" onclick="doSignup()">Create Account →</button>
+      <div class="auth-footer">Already have an account? <a onclick="switchAuthTab('login')">Sign in</a></div>
+    </div>
+    <!-- RESET -->
+    <div class="auth-panel" id="panel-reset">
+      <div class="auth-panel-title">Reset Password</div>
+      <div class="auth-msg error" id="resetErr"></div>
+      <div class="auth-msg success" id="resetOk"></div>
+      <div class="auth-group"><label>Username</label><input type="text" id="resetUser" placeholder="Your username"></div>
+      <div class="auth-group"><label>New Password</label><input type="password" id="resetPass" placeholder="Min 6 characters" oninput="checkPwStrength(this.value,'pwBar2')"><div class="pw-bar-wrap"><div class="pw-bar" id="pwBar2"></div></div></div>
+      <div class="auth-group"><label>Confirm New Password</label><input type="password" id="resetPass2" onkeydown="if(event.key==='Enter')doReset()"></div>
+      <button class="auth-btn" onclick="doReset()">Reset Password →</button>
+      <div class="auth-footer"><a onclick="switchAuthTab('login')">← Back to Sign In</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- PUBLIC BOOKING PAGE -->
+<div id="bookingPage">
+  <div class="booking-wrap fade-in">
+    <div style="text-align:center;margin-bottom:20px;font-size:1.8rem">✂️</div>
+    <div class="booking-title" id="bookingTitle">Book an Appointment</div>
+    <div class="booking-sub" id="bookingSub">Fill in the form below and we'll confirm your appointment shortly.</div>
+    <div id="bookingForm">
+      <div class="booking-field"><label>Your Name</label><input type="text" id="bkName" placeholder="Full name"></div>
+      <div class="booking-field"><label>Phone</label><input type="tel" id="bkPhone" placeholder="(832) 000-0000" inputmode="tel"></div>
+      <div class="booking-field"><label>WhatsApp (optional)</label><input type="tel" id="bkWA" placeholder="+17138001234" inputmode="tel"></div>
+      <div class="booking-field"><label>Email (optional)</label><input type="email" id="bkEmail" inputmode="email"></div>
+      <div class="booking-field"><label>Service</label>
+        <select id="bkService">
+          <option>Box Braids</option><option>Knotless Twist</option><option>Cornrows</option>
+          <option>Feed-in Braids</option><option>Tree Braids</option><option>Crochet Braids</option>
+          <option>Senegalese Twist</option><option>Bora Bora</option><option>Micro Braids</option>
+          <option>Sew-in</option><option>Wig Replacement</option><option>Kids Styles</option><option>Other</option>
+        </select>
+      </div>
+      <div class="booking-field"><label>Preferred Date</label><input type="date" id="bkDate"></div>
+      <div class="booking-field"><label>Preferred Time</label><input type="time" id="bkTime"></div>
+      <div class="booking-field"><label>Notes (optional)</label><textarea id="bkNote" rows="2" placeholder="Any special requests…" style="background:var(--bg4);border:1px solid var(--border2);border-radius:8px;color:var(--text);padding:11px 14px;font-size:.87rem;font-family:'DM Sans',sans-serif;outline:none;width:100%;resize:vertical"></textarea></div>
+      <button class="booking-submit" onclick="submitBooking()">Request Appointment ✓</button>
+      <div style="text-align:center;margin-top:14px;font-size:.72rem;color:var(--text3)">Powered by <strong style="color:var(--gold-light)">StrandPro</strong></div>
+    </div>
+    <div class="booking-success" id="bookingSuccess">
+      <div style="font-size:3rem;margin-bottom:12px">✅</div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:600;color:var(--gold-light);margin-bottom:8px">Booking Request Sent!</div>
+      <div style="color:var(--text2);font-size:.85rem;margin-bottom:20px">We'll confirm your appointment via WhatsApp or phone shortly.</div>
+      <button class="btn btn-outline btn-sm" onclick="resetBookingForm()">Book Another</button>
+    </div>
+  </div>
+</div>
+
+<!-- INSTALL BANNER -->
+<div id="installBanner">
+  <div class="install-text">📱 <strong>Install as App</strong> — Add to Home Screen for offline access</div>
+  <button class="install-btn" id="installBtn">Install</button>
+  <button class="install-dismiss" onclick="dismissInstall()">✕</button>
+</div>
+<!-- TRIAL BANNER -->
+<div id="trialBanner">
+  <span class="banner-text" id="bannerText"><strong>14-day free trial</strong></span>
+  <button class="banner-cta" onclick="showPaywall()">Upgrade Now</button>
+</div>
+
+<!-- APP SHELL -->
+<div class="app-shell">
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-name" id="sidebarSalonName">StrandPro</div>
+      <div class="brand-sub" id="sidebarSalonSub">Salon Management</div>
+      <div style="color:var(--gold-dim);font-size:.58rem;margin-top:3px;letter-spacing:.06em">powered by StrandPro</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">Main</div>
+      <div class="nav-item active" onclick="navigate('dashboard');closeSidebar()"><span class="nav-icon">📊</span> Dashboard</div>
+      <div class="nav-section">Operations</div>
+      <div class="nav-item" onclick="navigate('clients');closeSidebar()"><span class="nav-icon">👥</span> Clients (CRM)</div>
+      <div class="nav-item" onclick="navigate('inventory');closeSidebar()"><span class="nav-icon">📦</span> Inventory</div>
+      <div class="nav-item" onclick="navigate('staff');closeSidebar()"><span class="nav-icon">👩‍💼</span> Staff & Attendance</div>
+      <div class="nav-item" onclick="navigate('appointments');closeSidebar()"><span class="nav-icon">📅</span> Appointments</div>
+      <div class="nav-section">Finance</div>
+      <div class="nav-item owner-only" onclick="navigate('revenue');closeSidebar()"><span class="nav-icon">💰</span> Revenue & Payments</div>
+      <div class="nav-item owner-only" onclick="navigate('expenses');closeSidebar()"><span class="nav-icon">💸</span> Expenses</div>
+      <div class="nav-item owner-only" onclick="navigate('payroll');closeSidebar()"><span class="nav-icon">💵</span> Payroll</div>
+      <div class="nav-section">Tools</div>
+      <div class="nav-item owner-only" onclick="openBookingPageInfo()"><span class="nav-icon">🔗</span> Booking Link</div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sub-status-pill" onclick="openManageSub()">
+        <div class="sub-dot" id="subDot"></div>
+        <div class="sub-pill-text"><div class="sub-pill-label">Subscription</div><div class="sub-pill-value" id="subPillValue">Loading…</div></div>
+        <span style="color:var(--text3);font-size:.7rem;margin-left:auto">⚙</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="topbar">
+      <div class="topbar-left">
+        <button class="hamburger" id="hamburger" onclick="toggleSidebar()">☰</button>
+        <div class="topbar-title" id="topbarTitle">Dashboard</div>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-date" id="topbarDate"></div>
+        <div id="notifBell" onclick="toggleNotifDropdown()">🔔<div id="notifCount"></div></div>
+        <div class="user-menu-btn" id="userMenuBtn" onclick="toggleUserDropdown()">
+          <div class="user-avatar" id="userAvatarEl">?</div>
+          <span id="userDisplayName" style="max-width:70px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">User</span>
+          <span style="font-size:.65rem;opacity:.6">▾</span>
+        </div>
+        <div id="userDropdown">
+          <div class="user-dd-hdr">
+            <div class="user-dd-name" id="ddName">—</div>
+            <div class="user-dd-role" id="ddRole">—</div>
+            <div style="font-size:.65rem;color:var(--gold-dim);margin-top:3px;font-style:italic" id="ddSalon">—</div>
+          </div>
+          <div class="user-dd-item" onclick="openChangePass()">🔑 Change Password</div>
+          <div class="user-dd-item danger" onclick="doLogout()">🚪 Sign Out</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NOTIFICATION DROPDOWN -->
+    <div id="notifDropdown">
+      <div class="notif-header"><span class="notif-header-title">Notifications</span><span class="notif-clear" onclick="clearNotifs()">Clear all</span></div>
+      <div id="notifList"></div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <section class="page active" id="page-dashboard">
+      <div class="grid-5 mb-16" id="dashStats"></div>
+      <div class="grid-2 gap-10">
+        <div class="card">
+          <div class="card-title">⚡ Quick Actions</div>
+          <div class="quick-actions">
+            <div class="quick-btn" onclick="navigate('clients');setTimeout(()=>openClientModal(),150)"><span class="quick-btn-icon">👥</span>Add Client</div>
+            <div class="quick-btn" onclick="navigate('appointments');setTimeout(()=>openApptModal(),150)"><span class="quick-btn-icon">📅</span>New Appt.</div>
+            <div class="quick-btn" onclick="navigate('inventory');setTimeout(()=>openInvModal(),150)"><span class="quick-btn-icon">📦</span>Add Item</div>
+            <div class="quick-btn" onclick="navigate('staff');setTimeout(()=>openAttModal(),150)"><span class="quick-btn-icon">👩‍💼</span>Log Attend.</div>
+          </div>
+        </div>
+        <div class="card"><div class="card-title">📅 Today's Appointments</div><div id="dashTodayAppts"></div></div>
+        <div class="card"><div class="card-title">⚠️ Low Stock Alerts</div><div id="dashLowStock"></div>
+          <button class="btn btn-whatsapp btn-sm" style="margin-top:10px" onclick="sendReorderList()">📦 Send Reorder List via WhatsApp</button>
+        </div>
+        <div class="card"><div class="card-title">👥 Staff Present Today</div><div id="dashStaffPresent"></div></div>
+      </div>
+    </section>
+
+    <!-- CLIENTS CRM -->
+    <section class="page" id="page-clients">
+      <div class="section-header">
+        <div class="section-title">Clients (CRM)</div>
+        <button class="btn btn-gold btn-sm" onclick="openClientModal()">+ Add Client</button>
+      </div>
+      <div class="filter-bar">
+        <input type="text" id="clientSearch" placeholder="Search clients…" oninput="renderClients()">
+        <select id="clientStylistFilter" onchange="renderClients()"><option value="">All Stylists</option></select>
+      </div>
+      <div id="clientGrid" class="client-grid" style="gap:12px;margin-bottom:14px"></div>
+      <div id="clientEmpty" class="empty-state" style="display:none"><div class="e-icon">👥</div><p>No clients yet. Add your first client above.</p></div>
+    </section>
+
+    <!-- CLIENT PROFILE (sub-page) -->
+    <section class="page" id="page-client-profile">
+      <div class="section-header">
+        <button class="btn btn-outline btn-sm" onclick="navigate('clients')">← Back</button>
+        <button class="btn btn-gold btn-sm" onclick="openApptFromClient()">+ New Appointment</button>
+      </div>
+      <div id="clientProfileContent"></div>
+    </section>
+
+    <!-- INVENTORY -->
+    <section class="page" id="page-inventory">
+      <div class="section-header">
+        <div class="section-title">Inventory</div>
+        <div class="flex gap-8">
+          <button class="btn btn-whatsapp btn-sm" onclick="sendReorderList()">📦 Reorder List</button>
+          <button class="btn btn-gold btn-sm" onclick="openInvModal()">+ Add Item</button>
+        </div>
+      </div>
+      <div class="filter-bar">
+        <input type="text" id="invSearch" placeholder="Search…" oninput="renderInventory()">
+        <select id="invCatFilter" onchange="renderInventory()">
+          <option value="">All Categories</option>
+          <option>Braiding Hair</option><option>Hair Oil</option><option>Adhesives</option>
+          <option>Accessories</option><option>Tools</option><option>Hair Care</option><option>Other</option>
+        </select>
+      </div>
+      <div class="card">
+        <div class="table-wrap">
+          <table><thead><tr><th>Item</th><th>Category</th><th>Qty</th><th>Unit</th><th>Threshold</th><th>Reorder Qty</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="invTableBody"></tbody></table>
+          <div id="invEmpty" class="empty-state" style="display:none"><div class="e-icon">📦</div><p>No inventory items yet.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STAFF -->
+    <section class="page" id="page-staff">
+      <div class="section-header">
+        <div class="section-title">Staff & Attendance</div>
+        <div class="flex gap-8">
+          <button class="btn btn-outline btn-sm owner-only" onclick="openAddStaffModal()">+ Staff</button>
+          <button class="btn btn-outline btn-sm" onclick="openTaskModal()">+ Task</button>
+          <button class="btn btn-gold btn-sm" onclick="openAttModal()">Log Attendance</button>
+        </div>
+      </div>
+
+      <!-- ROLES MANAGER (owner only) -->
+      <div class="card mb-16 owner-only" id="roleManagerCard">
+        <div class="card-title" style="justify-content:space-between;cursor:pointer" onclick="toggleRolesPanel()">
+          <span>🎭 Roles Manager</span>
+          <span id="rolesPanelToggle" style="font-size:.75rem;color:var(--text3)">▼ Expand</span>
+        </div>
+        <div id="rolesPanelBody" style="display:none">
+          <div style="font-size:.78rem;color:var(--text3);margin-bottom:14px">
+            Define the roles available in your salon. Staff members can hold multiple roles simultaneously.
+          </div>
+          <div class="roles-list" id="rolesList"></div>
+          <div class="add-role-row">
+            <input type="text" id="newRoleInput" placeholder="New role name (e.g. Colorist, Manager, Cashier…)" onkeydown="if(event.key==='Enter')addCustomRole()">
+            <button class="btn btn-gold btn-sm" onclick="addCustomRole()">+ Add Role</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STAFF CARDS GRID -->
+      <div class="card mb-16">
+        <div class="card-title">👥 Staff Members</div>
+        <div class="staff-grid" id="staffGrid"></div>
+        <div id="staffEmpty" class="empty-state" style="display:none"><div class="e-icon">👥</div><p>No staff added yet.</p></div>
+      </div>
+
+      <div class="grid-2 mb-16">
+        <div class="card"><div class="card-title">🕐 Today's Attendance</div><div id="todayAtt"></div></div>
+        <div class="card"><div class="card-title">📋 Staff Tasks & Reminders</div><div id="taskList"></div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📊 Monthly Summary</div>
+        <div class="filter-bar"><select id="attMonthFilter" onchange="renderAttSummary()"></select></div>
+        <div class="table-wrap">
+          <table><thead><tr><th>Name</th><th>Roles</th><th>Days</th><th>Total Hrs</th><th>Avg/Day</th></tr></thead>
+          <tbody id="attSummaryBody"></tbody></table>
+        </div>
+      </div>
+    </section>
+
+    <!-- APPOINTMENTS -->
+    <section class="page" id="page-appointments">
+      <div class="section-header">
+        <div class="section-title">Appointments</div>
+        <div class="flex gap-8">
+          <button class="btn btn-outline btn-sm" onclick="openBookingPageInfo()">🔗 Booking Link</button>
+          <button class="btn btn-gold btn-sm" onclick="openApptModal()">+ New</button>
+        </div>
+      </div>
+      <div class="filter-bar">
+        <input type="text" id="apptSearch" placeholder="Search client…" oninput="renderAppts()">
+        <select id="apptStatusFilter" onchange="renderAppts()"><option value="">All Statuses</option><option>Pending</option><option>Confirmed</option><option>Completed</option><option>Cancelled</option></select>
+        <select id="apptServiceFilter" onchange="renderAppts()"><option value="">All Services</option></select>
+        <input type="date" id="apptDateFilter" onchange="renderAppts()">
+      </div>
+      <div class="card">
+        <div class="table-wrap">
+          <table><thead><tr><th>Client</th><th>Service</th><th>Stylist</th><th>Date & Time</th><th>Price</th><th>Status</th><th>Remind</th><th>Invoice</th><th>Actions</th></tr></thead>
+          <tbody id="apptTableBody"></tbody></table>
+          <div id="apptEmpty" class="empty-state" style="display:none"><div class="e-icon">📅</div><p>No appointments yet.</p></div>
+        </div>
+      </div>
+      <!-- Pending booking requests -->
+      <div class="card" style="margin-top:14px">
+        <div class="card-title">📨 Booking Requests <span id="bookingReqCount" class="badge badge-warn" style="display:none"></span></div>
+        <div id="bookingRequests"></div>
+      </div>
+    </section>
+
+    <!-- REVENUE (owner only) -->
+    <section class="page owner-section" id="page-revenue">
+      <div class="section-header">
+        <div class="section-title">Revenue & Payments</div>
+        <select id="revMonthFilter" onchange="renderRevenue()" style="background:var(--bg4);border:1px solid var(--border2);border-radius:6px;color:var(--text);padding:6px 10px;font-size:.8rem;font-family:'DM Sans',sans-serif;outline:none"></select>
+      </div>
+      <div class="grid-4 mb-16" id="revStats"></div>
+      <div class="grid-2 gap-10">
+        <div class="card">
+          <div class="card-title">📆 Daily Revenue</div>
+          <div class="table-wrap">
+            <table><thead><tr><th>Date</th><th>Appts</th><th>Revenue</th><th>Pending</th></tr></thead>
+            <tbody id="dailyRevBody"></tbody></table>
+            <div id="dailyRevEmpty" class="empty-state" style="display:none"><div class="e-icon">💰</div><p>No revenue data.</p></div>
+          </div>
+        </div>
+        <div class="card"><div class="card-title">💳 Payment Methods</div><div id="payMethodBreakdown"></div></div>
+      </div>
+      <div class="card" style="margin-top:14px">
+        <div class="card-title">🧾 Payment Ledger</div>
+        <div class="table-wrap">
+          <table><thead><tr><th>Client</th><th>Service</th><th>Date</th><th>Total</th><th>Deposit</th><th>Balance</th><th>Method</th><th>Status</th></tr></thead>
+          <tbody id="ledgerBody"></tbody></table>
+          <div id="ledgerEmpty" class="empty-state" style="display:none"><div class="e-icon">🧾</div><p>No payment records.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EXPENSES (owner only) -->
+    <section class="page owner-section" id="page-expenses">
+      <div class="section-header">
+        <div class="section-title">Expenses</div>
+        <button class="btn btn-gold btn-sm" onclick="openExpModal()">+ Add Expense</button>
+      </div>
+      <div class="exp-stat-row" id="expStats"></div>
+      <div class="grid-2 gap-10 mb-16">
+        <div class="card">
+          <div class="card-title">📆 Filter</div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <select id="expMonthFilter" onchange="renderExpenses()" style="background:var(--bg4);border:1px solid var(--border2);border-radius:6px;color:var(--text);padding:7px 10px;font-size:.8rem;font-family:'DM Sans',sans-serif;outline:none"></select>
+            <input type="text" id="expSearch" placeholder="Search expenses…" oninput="renderExpenses()" style="background:var(--bg4);border:1px solid var(--border2);border-radius:6px;color:var(--text);padding:7px 10px;font-size:.8rem;font-family:'DM Sans',sans-serif;outline:none">
+            <select id="expCatFilter" onchange="renderExpenses()" style="background:var(--bg4);border:1px solid var(--border2);border-radius:6px;color:var(--text);padding:7px 10px;font-size:.8rem;font-family:'DM Sans',sans-serif;outline:none">
+              <option value="">All Categories</option>
+              <option>Supplies</option><option>Rent</option><option>Utilities</option>
+              <option>Payroll</option><option>Marketing</option><option>Equipment</option>
+              <option>Maintenance</option><option>Insurance</option><option>Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="card"><div class="card-title">📊 By Category</div><div id="expCatBreakdown"></div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">🧾 Expense Ledger</div>
+        <div class="table-wrap">
+          <table><thead><tr><th>Date</th><th>Description</th><th>Category</th><th>Amount</th><th>Paid By</th><th>Receipt</th><th>Actions</th></tr></thead>
+          <tbody id="expTableBody"></tbody></table>
+          <div id="expEmpty" class="empty-state" style="display:none"><div class="e-icon">💸</div><p>No expenses recorded yet.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAYROLL (owner only) -->
+    <section class="page owner-section" id="page-payroll">
+      <div class="section-header">
+        <div class="section-title">Payroll Calculator</div>
+        <div class="flex gap-8">
+          <select id="payrollMonthFilter" onchange="renderPayroll()" style="background:var(--bg4);border:1px solid var(--border2);border-radius:6px;color:var(--text);padding:6px 10px;font-size:.8rem;font-family:'DM Sans',sans-serif;outline:none"></select>
+          <button class="btn btn-whatsapp btn-sm" onclick="exportPayrollWA()">💬 Send via WhatsApp</button>
+        </div>
+      </div>
+      <div class="grid-4 mb-16" id="payrollStats"></div>
+      <div class="card mb-16">
+        <div class="card-title">⚙️ Pay Settings per Staff</div>
+        <div id="paySettingsList"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">💵 Monthly Pay Summary</div>
+        <div class="table-wrap">
+          <table><thead><tr><th>Name</th><th>Role</th><th>Days</th><th>Hours</th><th>Pay Type</th><th>Rate</th><th>Commission</th><th>Total Pay</th></tr></thead>
+          <tbody id="payrollBody"></tbody></table>
+        </div>
+        <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-outline btn-sm" onclick="printPayroll()">🖨️ Print Summary</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div><!-- end app-shell -->
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav">
+  <div class="mobile-nav-inner">
+    <div class="mobile-nav-item active" id="mn-dashboard" onclick="navigate('dashboard')"><span class="m-icon">📊</span>Home</div>
+    <div class="mobile-nav-item" id="mn-clients" onclick="navigate('clients')"><span class="m-icon">👥</span>Clients</div>
+    <div class="mobile-nav-item" id="mn-appointments" onclick="navigate('appointments')"><span class="m-icon">📅</span>Appts</div>
+    <div class="mobile-nav-item" id="mn-staff" onclick="navigate('staff')"><span class="m-icon">👩‍💼</span>Staff</div>
+    <div class="mobile-nav-item owner-only" id="mn-revenue" onclick="navigate('revenue')"><span class="m-icon">💰</span>Revenue</div>
+    <div class="mobile-nav-item owner-only" id="mn-payroll" onclick="navigate('payroll')"><span class="m-icon">💵</span>Payroll</div>
+  </div>
+</div>
+
+<div id="toastContainer"></div>
+
+<!-- PAYWALL -->
+<div id="paywallScreen">
+  <div class="paywall-inner fade-in">
+    <div class="paywall-logo"><div class="paywall-logo-name" id="pwSalonName">StrandPro</div><div class="paywall-logo-sub">StrandPro · Salon Management</div></div>
+    <div class="paywall-headline">Continue with Full Access</div>
+    <div class="paywall-sub">Your 14-day free trial has ended. Choose a plan to keep all features.</div>
+    <div class="plan-cards">
+      <div class="plan-card" id="planMonthly" onclick="selectPlan('monthly')">
+        <div class="plan-select-ring"></div>
+        <div class="plan-name">Monthly</div><div class="plan-price">$19.99<span> /mo</span></div>
+        <div class="plan-note">Billed monthly · Cancel anytime</div>
+        <ul class="plan-features"><li>All Modules + CRM</li><li>Payroll Calculator</li><li>Invoice Generator</li><li>Booking Page</li><li>PWA offline</li></ul>
+      </div>
+      <div class="plan-card popular" id="planYearly" onclick="selectPlan('yearly')">
+        <div class="plan-select-ring"></div>
+        <div class="plan-name">Yearly</div><div class="plan-price">$150<span> /yr</span></div>
+        <div class="plan-note">Only $12.50/mo · Save $89.88/year</div>
+        <ul class="plan-features"><li>Everything in Monthly</li><li>37% Savings</li><li>Priority Updates</li><li>All Modules + CRM</li><li>PWA offline</li></ul>
+      </div>
+    </div>
+    <button class="paywall-subscribe-btn" id="subscribeBtn" onclick="confirmSubscribe()">Subscribe — Monthly · $19.99/mo</button>
+    <div class="paywall-legal">No real charge is made (demo). Cancel anytime from the sidebar.</div>
+  </div>
+</div>
+
+<!-- MANAGE SUB MODAL -->
+<div id="manageSubModal">
+  <div class="manage-sub-box fade-in">
+    <div class="manage-sub-title">⚙ Manage Subscription</div>
+    <div id="manageSubBody"></div>
+    <div class="sub-actions">
+      <button class="btn btn-outline btn-sm" onclick="closeManageSub()">Close</button>
+      <button class="btn btn-gold btn-sm" onclick="showPaywall();closeManageSub()" id="upgradeBtn" style="display:none">Change Plan</button>
+      <button class="btn btn-danger btn-sm" onclick="cancelSub()" id="cancelBtn" style="display:none">Cancel Subscription</button>
+    </div>
+  </div>
+</div>
+
+<!-- INVENTORY MODAL -->
+<div class="modal-overlay" id="invModal">
+  <div class="modal slide-up">
+    <div class="modal-title" id="invModalTitle">Add Item</div>
+    <div class="form-row">
+      <div class="form-group"><label>Item Name</label><input type="text" id="invName"></div>
+      <div class="form-group"><label>Category</label><select id="invCat"><option>Braiding Hair</option><option>Hair Oil</option><option>Adhesives</option><option>Accessories</option><option>Tools</option><option>Hair Care</option><option>Other</option></select></div>
+    </div>
+    <div class="form-row cols-3">
+      <div class="form-group"><label>Quantity</label><input type="number" id="invQty" min="0" inputmode="numeric"></div>
+      <div class="form-group"><label>Unit</label><select id="invUnit"><option>packs</option><option>bottles</option><option>pieces</option><option>bags</option><option>boxes</option><option>rolls</option><option>sets</option></select></div>
+      <div class="form-group"><label>Low Stock Threshold</label><input type="number" id="invThreshold" min="0" value="5" inputmode="numeric"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Reorder Qty (to reach)</label><input type="number" id="invReorder" min="0" value="20" inputmode="numeric"></div>
+      <div class="form-group"><label>Supplier (optional)</label><input type="text" id="invSupplier" placeholder="Supplier name"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline btn-sm" onclick="closeModal('invModal')">Cancel</button>
+      <button class="btn btn-gold btn-sm" onclick="saveInvItem()">Save Item</button>
+    </div>
+  </div>
+</div>
+
+<!-- CLIENT MODAL -->
+<div class="modal-overlay" id="clientModal">
+  <div class="modal slide-up">
+    <div class="modal-title" id="clientModalTitle">Add Client</div>
+    <div class="form-row">
+      <div class="form-group"><label>Full Name</label><input type="text" id="cName"></div>
+      <div class="form-group"><label>Phone</label><input type="tel" id="cPhone" inputmode="tel"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>WhatsApp</label><input type="tel" id="cWA" placeholder="+1..." inputmode="tel"></div>
+      <div class="form-group"><label>Email</label><input type="email" id="cEmail" inputmode="email"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Preferred Service</label><select id="cPrefService"><option>Box Braids</option><option>Knotless Twist</option><option>Cornrows</option><option>Feed-in Braids</option><option>Tree Braids</option><option>Crochet Braids</option><option>Senegalese Twist</option><option>Bora Bora</option><option>Micro Braids</option><option>Sew-in</option><option>Wig Replacement</option><option>Kids Styles</option><option>Other</option></select></div>
+      <div class="form-group"><label>Preferred Stylist</label><select id="cPrefStylist"></select></div>
+    </div>
+    <div class="form-row cols-1">
+      <div class="form-group"><label>Hair Notes (allergies, preferences, texture…)</label><textarea id="cHairNotes" rows="3" placeholder="e.g. Allergic to synthetic hair adhesive, prefers knotless, fine hair texture…"></textarea></div>
+    </div>
+    <div class="form-row cols-1">
+      <div class="form-group"><label>Birthday (optional)</label><input type="date" id="cBirthday"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline btn-sm" onclick="closeModal('clientModal')">Cancel</button>
+      <button class="btn btn-gold btn-sm" onclick="saveClient()">Save Client</button>
+    </div>
+  </div>
+</div>
+
+<!-- STAFF MODAL -->
+<div class="modal-overlay" id="addStaffModal">
+  <div class="modal slide-up">
+    <div class="modal-title" id="staffModalTitle">Add Staff Member</div>
+    <div class="form-row">
+      <div class="form-group"><label>Full Name</label><input type="text" id="staffName"></div>
+      <div class="form-group"><label>Primary Role</label><select id="staffRole"></select></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Phone</label><input type="tel" id="staffPhone" inputmode="tel"></div>
+      <div class="form-group"><label>WhatsApp</label><input type="tel" id="staffWA" placeholder="+1..." inputmode="tel"></div>
+    </div>
+    <div class="form-row cols-1">
+      <div class="form-group"><label>Email</label><input type="email" id="staffEmail" inputmode="email"></div>
+    </div>
+    <div class="form-row cols-1">
+      <div class="form-group">
+        <label>Additional Roles (select all that apply)</label>
+        <div id="staffRolesChecklist" style="background:var(--bg4);border:1px solid var(--border2);border-radius:8px;padding:10px 12px;margin-top:4px;display:flex;flex-wrap:wrap;gap:6px 14px"></div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline btn-sm" onclick="closeModal('addStaffModal')">Cancel</button>
+      <button class="btn btn-gold btn-sm" id="staffSaveBtn" onclick="saveStaff()">Add Staff</button>
+    </div>
+  </div>
+</div>
+
+<!-- ATTENDANCE MODAL -->
+<div class="modal-overlay" id="attModal">
+  <div class="modal slide-up">
+    <div class="modal-title">Log Attendance</div>
+    <div class="form-row cols-1"><div class="form-group"><label>Staff Member</label><select id="attStaff"></select></div></div>
+    <div class="form-row">
+      <div class="form-group"><label>Date</label><input type="date" id="attDate"></div>
+      <div class="form-group"><label>Check-In</label><input type="time" id="attIn"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Check-Out</label><input type="time" id="attOut"></div>
+      <div class="form-group"><label>Notes</label><input type="text" id="attNote"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline btn-sm" onclick="closeModal('attModal')">Cancel</button>
+      <button class="btn btn-gold btn-sm" onclick="saveAtt()">Log</button>
+    </div>
+  </div>
+</div>
+
+<!-- TASK MODAL -->
+<div class="modal-overlay" id="taskModal">
+  <div class="modal slide-up">
+    <div class="modal-title">Add Staff Task</div>
+    <div class="form-row cols-1"><div class="form-group"><label>Task Title</label><input type="text" id="taskTitle"></div></div>
+    <div class="form-row">
+      <div class="form-group"><label>Assign To</label><select id="taskStaff"><option value="">All Staff</option></select></div>
+      <div class="form-group"><label>Due Date</label><input type="date" id="taskDue"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Priority</label><select id="taskPriority"><option>Normal</option><option>High</option><option>Urgent</option></select></div>
+      <div class="form-group"><label>Due Time</label><input type="time" id="taskTime"></div>
+    </div>
+    <div class="form-row cols-1"><div class="form-group"><label>Notes</label><textarea id="taskNote" rows="2"></textarea></div></div>
+    <div class="modal-actions">
+      <button class="btn btn-outline btn-sm" onclick="closeModal('taskModal')">Cancel</button>
+      <button class="btn btn-gold btn-sm" onclick="saveTask()">Add Task</button>
+    </div>
+  </div>
+</div>
+
+<!-- APPOINTMENT MODAL -->
+<div class="modal-overlay" id="apptModal">
+  <div class="modal slide-up">
+    <div class="modal-title" id="apptModalTitle">New Appointment</div>
+    <div class="form-row">
+      <div class="form-group"><label>Client Name</label><input type="text" id="apptClient" oninput="autofillClientData(this.value)"></div>
+      <div class="form-group"><label>Client Phone</label><input type="tel" id="apptPhone" inputmode="tel"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>WhatsApp</label><input type="tel" id="apptWA" placeholder="+1..." inputmode="tel"></div>
+      <div class="form-group"><label>Email</label><input type="email" id="apptEmail" inputmode="email"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Service</label>
+        <select id="apptService"><option>Box Braids</option><option>Knotless Twist</option><option>Cornrows</option><option>Feed-in Braids</option><option>Tree Braids</option><option>Crochet Braids</option><option>Senegalese Twist</option><option>Bora Bora</option><option>Micro Braids</option><option>Sew-in</option><option>Wig Replacement</option><option>Kids Styles</option><option>Other</option></select>
+      </div>
+      <div class="form-group"><label>Assigned Stylist</label><select id="apptStylist"></select></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Date</label><input type="date" id="apptDate"></div>
+      <div class="form-group"><label>Time</label><input type="time" id="apptTime"></div>
+    </div>
+    <div class="form-row cols-3">
+      <div class="form-group"><label>Duration (hrs)</label><input type="number" id="apptDur" min="0.5" step="0.5" value="2" inputmode="decimal"></div>
+      <div class="form-group"><label>Price ($)</label><input type="number" id="apptPrice" min="0" step="5" inputmode="decimal"></div>
+      <div class="form-group"><label>Deposit ($)</label><input type="number" id="apptDeposit" value="30" min="0" inputmode="decimal"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Payment Method</label><select id="apptPayMethod"><option>Cash</option><option>Zelle</option><option>Card</option></select></div>
+      <div class="form-group"><label>Status</label><select id="apptStatus"><option>Pending</option><option>Confirmed</option><option>Completed</option><option>Cancelled</option></select></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline btn-sm" onclick="closeModal('apptModal')">Cancel</button>
+      <button class="btn btn-gold btn-sm" onclick="saveAppt()">Save Appointment</button>
+    </div>
+  </div>
+</div>
+
+<!-- EXPENSE MODAL -->
+<div class="modal-overlay" id="expModal">
+  <div class="modal slide-up">
+    <div class="modal-title" id="expModalTitle">Add Expense</div>
+    <div class="form-row">
+      <div class="form-group"><label>Description</label><input type="text" id="expDesc"></div>
+      <div class="form-group"><label>Category</label><select id="expCat"><option>Supplies</option><option>Rent</option><option>Utilities</option><option>Payroll</option><option>Marketing</option><option>Equipment</option><option>Maintenance</option><option>Insurance</option><option>Other</option></select></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Amount ($)</label><input type="number" id="expAmount" min="0" step="0.01" inputmode="decimal"></div>
+      <div class="form-group"><label>Date</label><input type="date" id="expDate"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Paid By</label><select id="expPaidBy"><option>Cash</option><option>Zelle</option><option>Card</option><option>Check</option><option>Other</option></select></div>
+      <div class="form-group"><label>Receipt #</label><input type="text" id="expReceipt"></div>
+    </div>
+    <div class="form-row cols-1"><div class="form-group"><label>Notes</label><textarea id="expNote" rows="2"></textarea></div></div>
+    <div class="modal-actions">
+      <button class="btn btn-outline btn-sm" onclick="closeModal('expModal')">Cancel</button>
+      <button class="btn btn-gold btn-sm" onclick="saveExpense()">Save Expense</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAY SETTINGS MODAL -->
+<div class="modal-overlay" id="paySettingsModal">
+  <div class="modal slide-up">
+    <div class="modal-title">💵 Pay Settings</div>
+    <div style="font-size:.82rem;color:var(--text2);margin-bottom:14px" id="paySettingsStaffName"></div>
+    <div class="form-row cols-1">
+      <div class="form-group"><label>Pay Type</label>
+        <select id="psType" onchange="togglePayFields()">
+          <option value="hourly">Hourly Rate</option>
+          <option value="commission">Commission %</option>
+          <option value="both">Hourly + Commission</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row" id="psHourlyRow">
+      <div class="form-group"><label>Hourly Rate ($)</label><input type="number" id="psHourly" min="0" step="0.5" inputmode="decimal"></div>
+    </div>
+    <div class="form-row" id="psCommRow">
+      <div class="form-group"><label>Commission % of Service</label><input type="number" id="psComm" min="0" max="100" step="1" inputmode="decimal"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline btn-sm" onclick="closeModal('paySettingsModal')">Cancel</button>
+      <button class="btn btn-gold btn-sm" onclick="savePaySettings()">Save Settings</button>
+    </div>
+  </div>
+</div>
+
+<!-- INVOICE MODAL -->
+<div class="modal-overlay" id="invoiceModal">
+  <div class="modal slide-up" style="max-width:580px">
+    <div class="modal-title">🧾 Invoice / Receipt</div>
+    <div id="invoicePrint"><div class="invoice-box" id="invoiceContent"></div></div>
+    <div class="modal-actions">
+      <button class="btn btn-outline btn-sm" onclick="closeModal('invoiceModal')">Close</button>
+      <button class="btn btn-whatsapp btn-sm" onclick="shareInvoiceWA()">💬 Share via WhatsApp</button>
+      <button class="btn btn-gold btn-sm" onclick="window.print()">🖨️ Print</button>
+    </div>
+  </div>
+</div>
+
+<!-- BOOKING INFO MODAL -->
+<div class="modal-overlay" id="bookingInfoModal">
+  <div class="modal slide-up">
+    <div class="modal-title">🔗 Online Booking Link</div>
+    <div style="font-size:.83rem;color:var(--text2);margin-bottom:16px">Share this link with your clients so they can request appointments directly from their phone.</div>
+    <div style="background:var(--bg4);border:1px solid var(--border2);border-radius:8px;padding:12px 14px;font-size:.8rem;color:var(--gold-light);word-break:break-all;font-family:monospace" id="bookingLinkDisplay"></div>
+    <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
+      <button class="btn btn-gold btn-sm" onclick="copyBookingLink()">📋 Copy Link</button>
+      <button class="btn btn-whatsapp btn-sm" onclick="shareBookingLinkWA()">💬 Share via WhatsApp</button>
+      <button class="btn btn-purple btn-sm" onclick="previewBookingPage()">👁 Preview Page</button>
+    </div>
+    <div style="margin-top:14px;font-size:.72rem;color:var(--text3)">💡 Clients fill the form → you see their request in the Appointments tab → confirm or decline with one click.</div>
+    <div class="modal-actions">
+      <button class="btn btn-outline btn-sm" onclick="closeModal('bookingInfoModal')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- CHANGE PASSWORD MODAL -->
+<div class="modal-overlay" id="changePwModal">
+  <div class="modal slide-up" style="max-width:380px">
+    <div class="modal-title">🔑 Change Password</div>
+    <div class="auth-msg error" id="cpErr"></div>
+    <div class="auth-msg success" id="cpOk"></div>
+    <div class="form-row cols-1"><div class="form-group"><label>Current Password</label><input type="password" id="cpCurrent"></div></div>
+    <div class="form-row cols-1"><div class="form-group"><label>New Password</label><input type="password" id="cpNew" placeholder="Min 6 characters"></div></div>
+    <div class="form-row cols-1"><div class="form-group"><label>Confirm New Password</label><input type="password" id="cpNew2"></div></div>
+    <div class="modal-actions">
+      <button class="btn btn-outline btn-sm" onclick="closeModal('changePwModal')">Cancel</button>
+      <button class="btn btn-gold btn-sm" onclick="doChangePass()">Update Password</button>
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+// ── STORAGE ────────────────────────────────────────────
+const S={
+  get:k=>{try{return JSON.parse(localStorage.getItem(k))||[];}catch{return[];}},
+  set:(k,v)=>localStorage.setItem(k,JSON.stringify(v)),
+  getObj:k=>{try{return JSON.parse(localStorage.getItem(k))||null;}catch{return null;}},
+  setObj:(k,v)=>localStorage.setItem(k,JSON.stringify(v)),
+};
+
+// ── PWA ────────────────────────────────────────────────
+let deferredPrompt=null;
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    const sw=`const C='sp-v4';self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(['./'])).then(()=>self.skipWaiting()));});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));});self.addEventListener('fetch',e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).catch(()=>caches.match('./'))));});`;
+    const b=new Blob([sw],{type:'application/javascript'});
+    navigator.serviceWorker.register(URL.createObjectURL(b),{scope:'./'}).catch(()=>{});
+  });
+}
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;if(!S.getObj('sp_installDismissed'))document.getElementById('installBanner').classList.add('show');});
+document.getElementById('installBtn').addEventListener('click',async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();const{outcome}=await deferredPrompt.userChoice;deferredPrompt=null;document.getElementById('installBanner').classList.remove('show');if(outcome==='accepted')showToast('✓ App installed!');});
+function dismissInstall(){document.getElementById('installBanner').classList.remove('show');S.setObj('sp_installDismissed',true);}
+async function requestNotifPermission(){if(!('Notification' in window))return false;if(Notification.permission==='granted')return true;if(Notification.permission==='denied')return false;return(await Notification.requestPermission())==='granted';}
+function sendBrowserNotif(title,body){if(Notification.permission==='granted')new Notification(title,{body});}
+
+// ── IN-APP NOTIFICATIONS ───────────────────────────────
+let notifications=[];
+function addNotif(msg){notifications.unshift({id:uid(),msg,time:Date.now(),read:false});if(notifications.length>40)notifications=notifications.slice(0,40);renderNotifBell();}
+function renderNotifBell(){const u=notifications.filter(n=>!n.read).length,c=document.getElementById('notifCount');c.textContent=u;c.classList.toggle('show',u>0);renderNotifList();}
+function renderNotifList(){const el=document.getElementById('notifList');if(!notifications.length){el.innerHTML='<div class="notif-empty">No notifications yet.</div>';return;}el.innerHTML=notifications.slice(0,20).map(n=>`<div class="notif-item ${n.read?'':'unread'}" onclick="markRead('${n.id}')"><div class="notif-dot ${n.read?'read':''}"></div><div class="notif-body"><div class="notif-msg">${n.msg}</div><div class="notif-time">${timeAgo(n.time)}</div></div></div>`).join('');}
+function markRead(id){const n=notifications.find(x=>x.id===id);if(n)n.read=true;renderNotifBell();}
+function clearNotifs(){notifications=[];renderNotifBell();document.getElementById('notifDropdown').classList.remove('open');}
+function toggleNotifDropdown(){const dd=document.getElementById('notifDropdown');dd.classList.toggle('open');if(dd.classList.contains('open')){notifications.forEach(n=>n.read=true);setTimeout(renderNotifBell,400);}}
+function timeAgo(ts){const s=Math.floor((Date.now()-ts)/1000);if(s<60)return'just now';if(s<3600)return Math.floor(s/60)+'m ago';if(s<86400)return Math.floor(s/3600)+'h ago';return Math.floor(s/86400)+'d ago';}
+
+// ── SUBSCRIPTION ───────────────────────────────────────
+const PLANS={monthly:{label:'Monthly',price:19.99,cycle:'month',days:30},yearly:{label:'Yearly',price:150,cycle:'year',days:365}};
+let selectedPlan='monthly';
+function initSubscription(){let sub=S.getObj('sp_sub');if(!sub){sub={status:'trial',trialStart:Date.now(),plan:null,expiry:null};S.setObj('sp_sub',sub);}return sub;}
+function getDaysLeft(sub){if(sub.status==='trial')return Math.max(0,14-Math.floor((Date.now()-sub.trialStart)/86400000));if((sub.status==='active'||sub.status==='cancelled')&&sub.expiry)return Math.max(0,Math.ceil((sub.expiry-Date.now())/86400000));return 0;}
+function isAccessAllowed(){const sub=S.getObj('sp_sub');if(!sub)return false;const d=getDaysLeft(sub);return(sub.status==='trial'&&d>0)||((sub.status==='active'||sub.status==='cancelled')&&d>0);}
+function updateSubUI(){const sub=S.getObj('sp_sub');if(!sub)return;const d=getDaysLeft(sub);const dot=document.getElementById('subDot'),pill=document.getElementById('subPillValue'),banner=document.getElementById('trialBanner'),bt=document.getElementById('bannerText');if(sub.status==='trial'){dot.className='sub-dot trial';pill.textContent=`Trial · ${d}d left`;if(d>0){banner.classList.add('show');bt.innerHTML=`<strong>${d} day${d!==1?'s':''} left</strong> in free trial`;}}else if(sub.status==='active'||sub.status==='cancelled'){dot.className='sub-dot active';pill.textContent=`${PLANS[sub.plan]?.label||'Pro'} · ${d}d`;banner.classList.remove('show');}else{dot.className='sub-dot expired';pill.textContent='Expired';banner.classList.remove('show');}}
+function checkAccess(){if(!isAccessAllowed())showPaywall();else{hidePaywall();updateSubUI();}}
+function showPaywall(){document.getElementById('paywallScreen').classList.add('show');selectPlan('monthly');}
+function hidePaywall(){document.getElementById('paywallScreen').classList.remove('show');}
+function selectPlan(p){selectedPlan=p;document.getElementById('planMonthly').classList.toggle('selected',p==='monthly');document.getElementById('planYearly').classList.toggle('selected',p==='yearly');document.getElementById('subscribeBtn').textContent=p==='monthly'?'Subscribe — Monthly · $19.99/mo':'Subscribe — Yearly · $150/year (Save $89.88)';}
+function confirmSubscribe(){const p=PLANS[selectedPlan];S.setObj('sp_sub',{status:'active',plan:selectedPlan,expiry:Date.now()+p.days*86400000,trialStart:S.getObj('sp_sub')?.trialStart||Date.now()});hidePaywall();updateSubUI();showToast(`✓ Subscribed to ${p.label} plan!`);addNotif(`🎉 Subscribed to ${p.label} plan at $${p.price}/${p.cycle}`);}
+function openManageSub(){const sub=S.getObj('sp_sub');if(!sub)return;const d=getDaysLeft(sub);const body=document.getElementById('manageSubBody'),ub=document.getElementById('upgradeBtn'),cb=document.getElementById('cancelBtn');if(sub.status==='trial'){body.innerHTML=`<div class="sub-info-row"><span class="label">Status</span><span class="value"><span class="badge badge-warn">Free Trial</span></span></div><div class="sub-info-row"><span class="label">Started</span><span class="value">${new Date(sub.trialStart).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</span></div><div class="sub-info-row"><span class="label">Days Left</span><span class="value" style="color:var(--warn)">${d} day${d!==1?'s':''}</span></div>`;ub.style.display='inline-flex';cb.style.display='none';}else if(sub.status==='active'||sub.status==='cancelled'){const p=PLANS[sub.plan];body.innerHTML=`<div class="sub-info-row"><span class="label">Status</span><span class="value"><span class="badge badge-success">${sub.status==='cancelled'?'Active (Cancels)':'Active'}</span></span></div><div class="sub-info-row"><span class="label">Plan</span><span class="value">${p?.label} — $${p?.price}/${p?.cycle}</span></div><div class="sub-info-row"><span class="label">Renews</span><span class="value">${new Date(sub.expiry).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}</span></div><div class="sub-info-row"><span class="label">Days Left</span><span class="value" style="color:var(--success)">${d} day${d!==1?'s':''}</span></div>`;ub.style.display='inline-flex';cb.style.display=sub.status==='cancelled'?'none':'inline-flex';}document.getElementById('manageSubModal').classList.add('open');}
+function closeManageSub(){document.getElementById('manageSubModal').classList.remove('open');}
+function cancelSub(){if(!confirm('Cancel subscription?'))return;const sub=S.getObj('sp_sub');sub.status='cancelled';S.setObj('sp_sub',sub);closeManageSub();updateSubUI();showToast('Subscription cancelled.');}
+
+// ── AUTH ───────────────────────────────────────────────
+function hashPw(pw){let h=0;for(let i=0;i<pw.length;i++)h=Math.imul(31,h)+pw.charCodeAt(i)|0;return h.toString(36);}
+function getUsers(){return S.getObj('sp_users')||{};}
+function setUsers(u){S.setObj('sp_users',u);}
+function getCurrentUser(){return S.getObj('sp_session')||null;}
+function setCurrentUser(u){S.setObj('sp_session',u);}
+function clearCurrentUser(){localStorage.removeItem('sp_session');}
+function isOwner(){const u=getCurrentUser();return u&&u.role==='owner';}
+
+function ensureAdminExists(){const users=getUsers();if(!users['admin']){users['admin']={username:'admin',name:'Admin',salon:'My Salon',role:'owner',pw:hashPw('admin123')};setUsers(users);}}
+
+function switchAuthTab(tab){['login','signup','reset'].forEach(t=>{document.getElementById('tab-'+t)?.classList.toggle('active',t===tab);document.getElementById('panel-'+t)?.classList.toggle('active',t===tab);});document.getElementById('tab-login').parentElement.style.display=tab==='reset'?'none':'flex';clearAuthMsgs();}
+function clearAuthMsgs(){['loginErr','signupErr','signupOk','resetErr','resetOk'].forEach(id=>{const el=document.getElementById(id);if(el){el.className='auth-msg';el.textContent='';};});}
+function showAuthMsg(id,msg,type='error'){const el=document.getElementById(id);if(!el)return;el.textContent=msg;el.className=`auth-msg ${type} show`;}
+function checkPwStrength(pw,barId='pwBar'){const bar=document.getElementById(barId);if(!bar)return;let s=0;if(pw.length>=6)s++;if(pw.length>=10)s++;if(/[A-Z]/.test(pw))s++;if(/[0-9]/.test(pw))s++;if(/[^A-Za-z0-9]/.test(pw))s++;bar.style.width=(s*20)+'%';bar.style.background=s<=1?'#e74c3c':s<=3?'#e67e22':'#27ae60';}
+
+function doLogin(){
+  const username=document.getElementById('loginUser').value.trim().toLowerCase();
+  const pw=document.getElementById('loginPass').value;
+  if(!username||!pw){showAuthMsg('loginErr','Please enter username and password.');return;}
+  const users=getUsers(),user=users[username];
+  if(!user||user.pw!==hashPw(pw)){showAuthMsg('loginErr','Incorrect username or password.');return;}
+  setCurrentUser({username:user.username,name:user.name,salon:user.salon||'My Salon',role:user.role});
+  document.getElementById('loginPass').value='';
+  hideAuthScreen();updateUserUI();applyRoleAccess();
+  showToast(`👋 Welcome back, ${user.name}!`);
+}
+function doSignup(){
+  const salon=document.getElementById('signupSalon').value.trim();
+  const name=document.getElementById('signupName').value.trim();
+  const username=document.getElementById('signupUser').value.trim().toLowerCase();
+  const role=document.getElementById('signupRole').value;
+  const pw=document.getElementById('signupPass').value;
+  const pw2=document.getElementById('signupPass2').value;
+  if(!salon){showAuthMsg('signupErr','Salon name is required.');return;}
+  if(!name||!username||!pw){showAuthMsg('signupErr','All fields are required.');return;}
+  if(username.length<3){showAuthMsg('signupErr','Username must be at least 3 characters.');return;}
+  if(pw.length<6){showAuthMsg('signupErr','Password must be at least 6 characters.');return;}
+  if(pw!==pw2){showAuthMsg('signupErr','Passwords do not match.');return;}
+  const users=getUsers();
+  if(users[username]){showAuthMsg('signupErr','Username already taken.');return;}
+  users[username]={username,name,salon,role,pw:hashPw(pw)};
+  setUsers(users);
+  showAuthMsg('signupOk',`✓ Account created for "${salon}"! You can now sign in.`,'success');
+  ['signupSalon','signupName','signupUser','signupPass','signupPass2'].forEach(id=>document.getElementById(id).value='');
+  setTimeout(()=>switchAuthTab('login'),1800);
+}
+function doReset(){
+  const username=document.getElementById('resetUser').value.trim().toLowerCase();
+  const pw=document.getElementById('resetPass').value,pw2=document.getElementById('resetPass2').value;
+  if(!username||!pw){showAuthMsg('resetErr','Username and new password required.');return;}
+  if(pw.length<6){showAuthMsg('resetErr','Password must be at least 6 characters.');return;}
+  if(pw!==pw2){showAuthMsg('resetErr','Passwords do not match.');return;}
+  const users=getUsers();
+  if(!users[username]){showAuthMsg('resetErr','Username not found.');return;}
+  users[username].pw=hashPw(pw);setUsers(users);
+  showAuthMsg('resetOk','✓ Password updated! You can now sign in.','success');
+  ['resetUser','resetPass','resetPass2'].forEach(id=>document.getElementById(id).value='');
+  setTimeout(()=>switchAuthTab('login'),1800);
+}
+function doLogout(){if(!confirm('Sign out?'))return;clearCurrentUser();document.getElementById('userDropdown').classList.remove('open');showAuthScreen();}
+function openChangePass(){document.getElementById('userDropdown').classList.remove('open');['cpCurrent','cpNew','cpNew2'].forEach(id=>document.getElementById(id).value='');['cpErr','cpOk'].forEach(id=>{const e=document.getElementById(id);e.className='auth-msg';e.textContent='';});openModal('changePwModal');}
+function doChangePass(){
+  const current=document.getElementById('cpCurrent').value,nw=document.getElementById('cpNew').value,nw2=document.getElementById('cpNew2').value;
+  const session=getCurrentUser();if(!session)return;
+  const users=getUsers(),user=users[session.username];
+  if(!user||user.pw!==hashPw(current)){document.getElementById('cpErr').textContent='Current password is incorrect.';document.getElementById('cpErr').className='auth-msg error show';return;}
+  if(nw.length<6){document.getElementById('cpErr').textContent='New password must be at least 6 characters.';document.getElementById('cpErr').className='auth-msg error show';return;}
+  if(nw!==nw2){document.getElementById('cpErr').textContent='Passwords do not match.';document.getElementById('cpErr').className='auth-msg error show';return;}
+  user.pw=hashPw(nw);setUsers(users);
+  document.getElementById('cpOk').textContent='✓ Password changed!';document.getElementById('cpOk').className='auth-msg success show';
+  setTimeout(()=>closeModal('changePwModal'),1500);
+}
+function showAuthScreen(){document.getElementById('authScreen').classList.add('show');}
+function hideAuthScreen(){document.getElementById('authScreen').classList.remove('show');}
+
+function updateUserUI(){
+  const u=getCurrentUser();if(!u)return;
+  const initials=u.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  const salon=u.salon||'My Salon';
+  document.getElementById('userAvatarEl').textContent=initials;
+  document.getElementById('userDisplayName').textContent=u.name.split(' ')[0];
+  document.getElementById('ddName').textContent=u.name;
+  document.getElementById('ddRole').textContent=u.role==='owner'?'Owner / Manager':'Staff';
+  document.getElementById('ddSalon').textContent=salon;
+  document.getElementById('sidebarSalonName').textContent=salon;
+  document.getElementById('sidebarSalonSub').textContent=u.role==='owner'?'Owner Dashboard':'Staff Portal';
+  document.title=salon+' — StrandPro';
+  const pwl=document.querySelector('.paywall-logo-name');if(pwl)pwl.textContent=salon;
+  const pwsn=document.getElementById('pwSalonName');if(pwsn)pwsn.textContent=salon;
+}
+
+// ── ROLE-BASED ACCESS CONTROL ──────────────────────────
+function applyRoleAccess(){
+  const owner=isOwner();
+  // Sidebar nav items
+  document.querySelectorAll('.nav-item.owner-only').forEach(el=>el.classList.toggle('hidden',!owner));
+  // Mobile nav items
+  document.querySelectorAll('.mobile-nav-item.owner-only').forEach(el=>el.classList.toggle('hidden',!owner));
+  // Page sections
+  document.querySelectorAll('.owner-section').forEach(el=>el.classList.toggle('hidden',!owner));
+}
+
+// ── USER DROPDOWN ──────────────────────────────────────
+function toggleUserDropdown(){document.getElementById('userDropdown').classList.toggle('open');document.getElementById('notifDropdown').classList.remove('open');}
+document.addEventListener('click',e=>{const dd=document.getElementById('userDropdown'),btn=document.getElementById('userMenuBtn');if(dd&&btn&&!btn.contains(e.target)&&!dd.contains(e.target))dd.classList.remove('open');const nd=document.getElementById('notifDropdown'),bell=document.getElementById('notifBell');if(nd&&bell&&!bell.contains(e.target)&&!nd.contains(e.target))nd.classList.remove('open');});
+
+// ── SIDEBAR ────────────────────────────────────────────
+function toggleSidebar(){const sb=document.getElementById('sidebar'),ov=document.getElementById('sidebarOverlay');sb.classList.toggle('open');ov.classList.toggle('show');}
+function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebarOverlay').classList.remove('show');}
+
+// ── NAVIGATION ─────────────────────────────────────────
+const titles={dashboard:'Dashboard',clients:'Clients (CRM)',inventory:'Inventory','client-profile':'Client Profile',staff:'Staff & Attendance',appointments:'Appointments',revenue:'Revenue & Payments',expenses:'Expenses',payroll:'Payroll'};
+function navigate(page){
+  if((page==='revenue'||page==='expenses'||page==='payroll')&&!isOwner()){showToast('⚠ Owner access required.');return;}
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.querySelectorAll('.mobile-nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  const ni=document.querySelector(`.nav-item[onclick*="navigate('${page}')"]`);if(ni)ni.classList.add('active');
+  const mi=document.getElementById('mn-'+page);if(mi)mi.classList.add('active');
+  document.getElementById('topbarTitle').textContent=titles[page]||page;
+  if(page==='dashboard')renderDashboard();
+  if(page==='clients')renderClients();
+  if(page==='inventory')renderInventory();
+  if(page==='staff')renderStaff();
+  if(page==='appointments')renderAppts();
+  if(page==='revenue')renderRevenue();
+  if(page==='expenses')renderExpenses();
+  if(page==='payroll')renderPayroll();
+}
+
+// ── UTILS ──────────────────────────────────────────────
+const uid=()=>Math.random().toString(36).slice(2,9);
+const today=()=>new Date().toISOString().split('T')[0];
+const fmtDate=d=>d?new Date(d+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'';
+const fmtMoney=n=>'$'+(parseFloat(n)||0).toFixed(2);
+const monthKey=d=>d?d.slice(0,7):'';
+function statusBadge(s){const map={Pending:'badge-warn',Confirmed:'badge-info',Completed:'badge-success',Cancelled:'badge-danger'};return`<span class="badge ${map[s]||'badge-grey'}">${s}</span>`;}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+function openModal(id){document.getElementById(id).classList.add('open');}
+document.querySelectorAll('.modal-overlay').forEach(o=>{o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');});});
+document.getElementById('manageSubModal').addEventListener('click',e=>{if(e.target===document.getElementById('manageSubModal'))closeManageSub();});
+function showToast(msg){const c=document.getElementById('toastContainer'),t=document.createElement('div');t.className='toast';t.textContent=msg;c.appendChild(t);setTimeout(()=>t.remove(),3500);}
+
+// ── REMINDER HELPERS ───────────────────────────────────
+function buildWA(phone,msg){const clean=(phone||'').replace(/\D/g,'');if(!clean)return null;return`https://wa.me/${clean}?text=${encodeURIComponent(msg)}`;}
+function buildEmail(email,subject,body){if(!email)return null;return`mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;}
+function sendClientReminder(apptId,channel){
+  const appts=S.get('appts'),a=appts.find(x=>x.id===apptId);if(!a)return;
+  const salon=(getCurrentUser()?.salon)||'StrandPro';
+  const msg=`Hi ${a.client}! 💇‍♀️ Reminder from ${salon}.\n\n📅 ${fmtDate(a.date)} at ${a.time||'TBD'}\n💆 Service: ${a.service}\n💰 Balance due: ${fmtMoney((a.price||0)-(a.deposit||0))}\n\nSee you soon! ✨\n— ${salon}`;
+  if(channel==='whatsapp'){const link=buildWA(a.wa||a.phone,msg);if(!link){showToast('⚠ No WhatsApp number for this client.');return;}window.open(link,'_blank');addNotif(`📱 WhatsApp reminder → ${a.client}`);}
+  else{const link=buildEmail(a.email,`Appointment Reminder — ${fmtDate(a.date)}`,msg);if(!link){showToast('⚠ No email for this client.');return;}window.open(link,'_blank');addNotif(`📧 Email reminder → ${a.client}`);}
+  showToast(`✓ Reminder sent to ${a.client}`);
+}
+
+// ── INVOICE GENERATOR ──────────────────────────────────
+let currentInvoiceApptId=null;
+function openInvoice(apptId){
+  const appts=S.get('appts'),a=appts.find(x=>x.id===apptId);if(!a)return;
+  currentInvoiceApptId=apptId;
+  const salon=getCurrentUser()?.salon||'StrandPro';
+  const invNum='INV-'+a.id.toUpperCase().slice(0,6);
+  const bal=(a.price||0)-(a.deposit||0);
+  document.getElementById('invoiceContent').innerHTML=`
+    <div class="invoice-header">
+      <div><div class="invoice-logo">✂️ ${salon}</div><div style="font-size:.75rem;color:#666;margin-top:4px">Powered by StrandPro</div></div>
+      <div style="text-align:right"><div style="font-weight:700;font-size:1rem">RECEIPT / INVOICE</div><div style="font-size:.8rem;color:#666">${invNum}</div><div style="font-size:.8rem;color:#666">${fmtDate(a.date)}</div></div>
+    </div>
+    <div style="margin-bottom:16px"><div style="font-size:.75rem;color:#888;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Bill To</div><div style="font-weight:600">${a.client}</div><div style="font-size:.8rem;color:#666">${a.phone||''}</div></div>
+    <table class="invoice-table">
+      <thead><tr><th>Service</th><th>Stylist</th><th>Date</th><th>Amount</th></tr></thead>
+      <tbody>
+        <tr><td>${a.service}</td><td>${a.stylist||'—'}</td><td>${fmtDate(a.date)} ${a.time||''}</td><td>${fmtMoney(a.price)}</td></tr>
+      </tbody>
+    </table>
+    <div style="border-top:1px solid #eee;padding-top:12px">
+      <div style="display:flex;justify-content:space-between;font-size:.83rem;margin-bottom:4px"><span>Deposit Paid</span><span style="color:#27ae60">– ${fmtMoney(a.deposit)}</span></div>
+      <div class="invoice-total">Balance Due: ${fmtMoney(bal)}</div>
+    </div>
+    <div style="margin-top:16px;font-size:.75rem;color:#888;border-top:1px solid #eee;padding-top:12px">Payment Method: ${a.payMethod||'—'} · Status: ${a.status}</div>
+    <div style="margin-top:8px;font-size:.72rem;color:#aaa">Thank you for visiting ${salon}!</div>
+  `;
+  openModal('invoiceModal');
+}
+function shareInvoiceWA(){
+  const appts=S.get('appts'),a=appts.find(x=>x.id===currentInvoiceApptId);if(!a)return;
+  const salon=getCurrentUser()?.salon||'StrandPro';
+  const bal=(a.price||0)-(a.deposit||0);
+  const msg=`🧾 *Receipt — ${salon}*\n\nClient: ${a.client}\nService: ${a.service}\nDate: ${fmtDate(a.date)}${a.time?' at '+a.time:''}\n\nService Price: ${fmtMoney(a.price)}\nDeposit Paid: – ${fmtMoney(a.deposit)}\n*Balance Due: ${fmtMoney(bal)}*\n\nPayment: ${a.payMethod||'—'}\n\nThank you! ✨`;
+  const link=buildWA(a.wa||a.phone,msg);
+  if(!link){showToast('⚠ No WhatsApp number for this client.');return;}
+  window.open(link,'_blank');showToast('✓ Invoice shared via WhatsApp');
+}
+
+// ── REORDER LIST ───────────────────────────────────────
+function sendReorderList(){
+  const inv=S.get('inv');
+  const low=inv.filter(i=>i.qty<i.threshold);
+  if(!low.length){showToast('✓ All items are sufficiently stocked!');return;}
+  const salon=getCurrentUser()?.salon||'StrandPro';
+  const lines=low.map(i=>`• ${i.name}: need ${(i.reorder||i.threshold*3)-i.qty} more ${i.unit} (have ${i.qty}, need ${i.reorder||i.threshold*3})`).join('\n');
+  const msg=`📦 *Reorder List — ${salon}*\n${new Date().toLocaleDateString('en-US')}\n\n${lines}\n\nPlease restock at your earliest convenience.`;
+  const staff=S.get('staff');
+  // Try to find a WhatsApp number to send to — prompt user
+  const waNum=prompt('Enter supplier or owner WhatsApp number to send reorder list:\n(e.g. +17138001234)');
+  if(!waNum)return;
+  const link=buildWA(waNum,msg);
+  if(link)window.open(link,'_blank');
+  addNotif(`📦 Reorder list sent for ${low.length} low-stock items`);
+  showToast(`✓ Reorder list sent for ${low.length} items`);
+}
+
+// ── BOOKING PAGE ───────────────────────────────────────
+function getBookingUrl(){return window.location.href.split('?')[0]+'?booking=1';}
+function openBookingPageInfo(){
+  document.getElementById('bookingLinkDisplay').textContent=getBookingUrl();
+  openModal('bookingInfoModal');
+}
+function copyBookingLink(){navigator.clipboard?.writeText(getBookingUrl()).then(()=>showToast('✓ Link copied!'));}
+function shareBookingLinkWA(){
+  const salon=getCurrentUser()?.salon||'My Salon';
+  const msg=`💇 Book an appointment at *${salon}*!\n\nClick the link below to request your appointment online:\n${getBookingUrl()}\n\nWe'll confirm shortly. ✨`;
+  const waNum=prompt('WhatsApp number to share with (e.g. +17138001234):');
+  if(!waNum)return;
+  const link=buildWA(waNum,msg);if(link)window.open(link,'_blank');
+}
+function previewBookingPage(){closeModal('bookingInfoModal');showBookingPage();}
+function showBookingPage(){
+  const session=getCurrentUser();
+  const salon=session?.salon||'StrandPro';
+  document.getElementById('bookingTitle').textContent='Book at '+salon;
+  document.getElementById('bkDate').value=today();
+  document.getElementById('bookingPage').classList.add('show');
+}
+function hideBookingPage(){document.getElementById('bookingPage').classList.remove('show');document.getElementById('bookingForm').style.display='block';document.getElementById('bookingSuccess').classList.remove('show');}
+function resetBookingForm(){document.getElementById('bookingForm').style.display='block';document.getElementById('bookingSuccess').classList.remove('show');['bkName','bkPhone','bkWA','bkEmail','bkNote'].forEach(id=>document.getElementById(id).value='');document.getElementById('bkDate').value=today();}
+function submitBooking(){
+  const name=document.getElementById('bkName').value.trim();
+  const phone=document.getElementById('bkPhone').value.trim();
+  if(!name||!phone){alert('Name and phone are required.');return;}
+  const req={id:uid(),client:name,phone,wa:document.getElementById('bkWA').value.trim(),email:document.getElementById('bkEmail').value.trim(),service:document.getElementById('bkService').value,date:document.getElementById('bkDate').value,time:document.getElementById('bkTime').value,note:document.getElementById('bkNote').value,status:'pending_request',createdAt:Date.now()};
+  const reqs=S.get('booking_requests');reqs.push(req);S.set('booking_requests',reqs);
+  addNotif(`📨 New booking request from ${name} — ${req.service} on ${fmtDate(req.date)}`);
+  sendBrowserNotif('New Booking Request',`${name} — ${req.service}`);
+  document.getElementById('bookingForm').style.display='none';
+  document.getElementById('bookingSuccess').classList.add('show');
+}
+// Check for ?booking=1 in URL
+if(window.location.search.includes('booking=1'))window.addEventListener('load',()=>setTimeout(showBookingPage,500));
+
+// ── SEED DATA ──────────────────────────────────────────
+function seedData(){
+  if(S.get('inv').length===0){
+    S.set('inv',[
+      {id:uid(),name:'Kanekalon Braiding Hair (Black)',category:'Braiding Hair',qty:30,unit:'packs',threshold:8,reorder:30,supplier:'Beauty Supply Plus'},
+      {id:uid(),name:'Kanekalon Braiding Hair (Brown)',category:'Braiding Hair',qty:20,unit:'packs',threshold:8,reorder:30,supplier:''},
+      {id:uid(),name:'Synthetic Extensions (Curly)',category:'Braiding Hair',qty:4,unit:'packs',threshold:6,reorder:20,supplier:''},
+      {id:uid(),name:'Bulk Braiding Hair (Jumbo)',category:'Braiding Hair',qty:15,unit:'packs',threshold:5,reorder:20,supplier:''},
+      {id:uid(),name:'Huile de Soin (Hair Oil)',category:'Hair Oil',qty:7,unit:'bottles',threshold:3,reorder:10,supplier:''},
+      {id:uid(),name:'Coconut Oil',category:'Hair Oil',qty:4,unit:'bottles',threshold:3,reorder:10,supplier:''},
+      {id:uid(),name:'Hair Glue / Colle',category:'Adhesives',qty:2,unit:'bottles',threshold:4,reorder:12,supplier:''},
+      {id:uid(),name:'Rubber Bands (Small)',category:'Accessories',qty:50,unit:'packs',threshold:10,reorder:30,supplier:''},
+      {id:uid(),name:'Beads & Accessories',category:'Accessories',qty:12,unit:'sets',threshold:5,reorder:15,supplier:''},
+      {id:uid(),name:'Braiding Needles',category:'Tools',qty:3,unit:'pieces',threshold:5,reorder:15,supplier:''},
+      {id:uid(),name:'Wide-Tooth Comb',category:'Tools',qty:8,unit:'pieces',threshold:3,reorder:10,supplier:''},
+      {id:uid(),name:'Edge Control',category:'Hair Care',qty:5,unit:'bottles',threshold:3,reorder:10,supplier:''},
+      {id:uid(),name:'Clarifying Shampoo',category:'Hair Care',qty:6,unit:'bottles',threshold:2,reorder:8,supplier:''},
+      {id:uid(),name:'Deep Conditioner',category:'Hair Care',qty:3,unit:'bottles',threshold:2,reorder:8,supplier:''},
+    ]);
+  }
+  if(S.get('staff').length===0){
+    S.set('staff',[
+      {id:uid(),name:'Alma',    role:'Braider',    roles:['Braider'],                phone:'(832) 555-0101',wa:'',email:''},
+      {id:uid(),name:'Mireille',role:'Braider',    roles:['Braider','Receptionist'], phone:'(832) 555-0202',wa:'',email:''},
+      {id:uid(),name:'Solange', role:'Apprentice', roles:['Apprentice'],             phone:'(832) 555-0303',wa:'',email:''},
+    ]);
+  }
+  if(S.get('tasks').length===0){
+    S.set('tasks',[
+      {id:uid(),title:'Sanitize all braiding stations',assignedTo:'',due:today(),time:'09:00',priority:'High',note:'Use salon-grade disinfectant',done:false,createdAt:Date.now()},
+      {id:uid(),title:'Restock rubber bands and beads',assignedTo:'',due:today(),time:'10:00',priority:'Normal',note:'',done:false,createdAt:Date.now()},
+    ]);
+  }
+}
+
+// ── DASHBOARD ──────────────────────────────────────────
+function renderDashboard(){
+  const inv=S.get('inv'),staff=S.get('staff'),appts=S.get('appts'),att=S.get('att'),tod=today();
+  const todayAppts=appts.filter(a=>a.date===tod);
+  const monthlyCompleted=appts.filter(a=>a.date&&a.date.startsWith(monthKey(tod))&&a.status==='Completed');
+  const monthRev=monthlyCompleted.reduce((s,a)=>s+(parseFloat(a.price)||0),0);
+  const lowStock=inv.filter(i=>i.qty<i.threshold);
+  const presentToday=att.filter(a=>a.date===tod);
+  const clients=S.get('clients');
+  document.getElementById('dashStats').innerHTML=`
+    <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-label">Today's Appts</div><div class="stat-value">${todayAppts.length}</div><div class="stat-sub">${todayAppts.filter(a=>a.status==='Confirmed').length} confirmed</div></div>
+    <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-label">Total Clients</div><div class="stat-value">${clients.length}</div></div>
+    ${isOwner()?`<div class="stat-card"><div class="stat-icon">💰</div><div class="stat-label">Monthly Revenue</div><div class="stat-value">${fmtMoney(monthRev)}</div><div class="stat-sub">${monthlyCompleted.length} completed</div></div>`:''}
+    <div class="stat-card"><div class="stat-icon">⚠️</div><div class="stat-label">Low Stock</div><div class="stat-value ${lowStock.length>0?'pulse-warn':''}" style="${lowStock.length>0?'color:var(--warn)':''}">${lowStock.length}</div></div>
+    <div class="stat-card"><div class="stat-icon">👩‍💼</div><div class="stat-label">Staff Present</div><div class="stat-value">${presentToday.length}</div><div class="stat-sub">of ${staff.length}</div></div>`;
+  const tEl=document.getElementById('dashTodayAppts');
+  tEl.innerHTML=todayAppts.length===0?'<div class="text-muted text-sm" style="padding:12px 0">No appointments today.</div>':todayAppts.map(a=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border)"><div><div style="font-weight:500;font-size:.83rem">${a.client}</div><div class="text-muted text-sm">${a.service}${a.time?' · '+a.time:''}</div></div>${statusBadge(a.status)}</div>`).join('');
+  const lEl=document.getElementById('dashLowStock');
+  lEl.innerHTML=lowStock.length===0?'<div style="color:var(--success);font-size:.82rem;padding:8px 0">✓ All items sufficiently stocked.</div>':lowStock.slice(0,5).map(i=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)"><div class="text-sm">${i.name}</div><span class="badge badge-warn">${i.qty}/${i.threshold}</span></div>`).join('');
+  const sEl=document.getElementById('dashStaffPresent');
+  sEl.innerHTML=presentToday.length===0?'<div class="text-muted text-sm" style="padding:12px 0">No check-ins today.</div>':presentToday.map(a=>{const m=staff.find(s=>s.id===a.staffId);return`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:.83rem"><span>${m?m.name:'—'}</span><span class="text-muted">${a.in||'—'} – ${a.out||'ongoing'}</span></div>`;}).join('');
+}
+
+// ── CLIENTS CRM ────────────────────────────────────────
+let editClientId=null,activeClientId=null;
+function openClientModal(id){
+  editClientId=id||null;
+  const clients=S.get('clients'),staff=S.get('staff'),c=id?clients.find(x=>x.id===id):null;
+  document.getElementById('clientModalTitle').textContent=id?'Edit Client':'Add Client';
+  document.getElementById('cName').value=c?c.name:'';
+  document.getElementById('cPhone').value=c?c.phone:'';
+  document.getElementById('cWA').value=c?c.wa:'';
+  document.getElementById('cEmail').value=c?c.email:'';
+  document.getElementById('cPrefService').value=c?c.prefService:'Box Braids';
+  document.getElementById('cHairNotes').value=c?c.hairNotes:'';
+  document.getElementById('cBirthday').value=c?c.birthday:'';
+  const sel=document.getElementById('cPrefStylist');
+  sel.innerHTML='<option value="">No preference</option>'+staff.map(s=>`<option value="${s.name}" ${c&&c.prefStylist===s.name?'selected':''}>${s.name}</option>`).join('');
+  openModal('clientModal');
+}
+function saveClient(){
+  const name=document.getElementById('cName').value.trim();
+  if(!name){alert('Client name required.');return;}
+  const clients=S.get('clients');
+  const obj={name,phone:document.getElementById('cPhone').value.trim(),wa:document.getElementById('cWA').value.trim(),email:document.getElementById('cEmail').value.trim(),prefService:document.getElementById('cPrefService').value,prefStylist:document.getElementById('cPrefStylist').value,hairNotes:document.getElementById('cHairNotes').value.trim(),birthday:document.getElementById('cBirthday').value,createdAt:Date.now()};
+  if(editClientId){const idx=clients.findIndex(c=>c.id===editClientId);clients[idx]={...clients[idx],...obj};}
+  else{clients.push({...obj,id:uid()});addNotif(`👥 New client added: ${name}`);}
+  S.set('clients',clients);closeModal('clientModal');renderClients();
+}
+function deleteClient(id){if(!confirm('Delete this client?'))return;S.set('clients',S.get('clients').filter(c=>c.id!==id));renderClients();}
+function viewClientProfile(id){
+  activeClientId=id;
+  const clients=S.get('clients'),appts=S.get('appts'),c=clients.find(x=>x.id===id);if(!c)return;
+  const clientAppts=appts.filter(a=>a.client.toLowerCase()===c.name.toLowerCase()).sort((a,b)=>(b.date||'')>(a.date||'')?1:-1);
+  const totalSpent=clientAppts.filter(a=>a.status==='Completed').reduce((s,a)=>s+(a.price||0),0);
+  const lastVisit=clientAppts.filter(a=>a.status==='Completed')[0];
+  const initials=c.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  document.getElementById('clientProfileContent').innerHTML=`
+    <div class="card mb-16">
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px">
+        <div class="client-avatar" style="width:56px;height:56px;font-size:1.3rem">${initials}</div>
+        <div style="flex:1">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:600;color:var(--text)">${c.name}</div>
+          <div class="text-muted text-sm">${c.phone||''}${c.email?' · '+c.email:''}</div>
+        </div>
+        <button class="btn btn-outline btn-sm" onclick="openClientModal('${c.id}')">✏️ Edit</button>
+      </div>
+      <div class="grid-3" style="gap:12px;margin-bottom:16px">
+        <div class="stat-card"><div class="stat-label">Total Spent</div><div class="stat-value" style="font-size:1.4rem">${fmtMoney(totalSpent)}</div></div>
+        <div class="stat-card"><div class="stat-label">Visits</div><div class="stat-value" style="font-size:1.4rem">${clientAppts.filter(a=>a.status==='Completed').length}</div></div>
+        <div class="stat-card"><div class="stat-label">Last Visit</div><div class="stat-value" style="font-size:1rem;margin-top:4px">${lastVisit?fmtDate(lastVisit.date):'—'}</div></div>
+      </div>
+      <div class="grid-2" style="gap:12px">
+        <div><div class="text-muted text-sm" style="margin-bottom:4px">Preferred Service</div><span class="badge badge-gold">${c.prefService||'—'}</span></div>
+        <div><div class="text-muted text-sm" style="margin-bottom:4px">Preferred Stylist</div><span>${c.prefStylist||'No preference'}</span></div>
+        ${c.birthday?`<div><div class="text-muted text-sm" style="margin-bottom:4px">Birthday</div><span>${fmtDate(c.birthday)}</span></div>`:''}
+        ${c.wa?`<div><div class="text-muted text-sm" style="margin-bottom:4px">WhatsApp</div><a href="https://wa.me/${c.wa.replace(/\D/g,'')}" target="_blank" style="color:var(--success)">💬 ${c.wa}</a></div>`:''}
+      </div>
+      ${c.hairNotes?`<div style="margin-top:14px;background:var(--bg4);border-radius:8px;padding:12px"><div class="text-muted text-sm" style="margin-bottom:6px">✂️ Hair Notes</div><div style="font-size:.83rem">${c.hairNotes}</div></div>`:''}
+    </div>
+    <div class="card">
+      <div class="card-title">📋 Appointment History</div>
+      ${clientAppts.length===0?'<div class="empty-state"><div class="e-icon">📅</div><p>No appointments yet.</p></div>':
+      `<div class="table-wrap"><table><thead><tr><th>Date</th><th>Service</th><th>Stylist</th><th>Price</th><th>Status</th><th>Invoice</th></tr></thead><tbody>
+      ${clientAppts.map(a=>`<tr><td>${fmtDate(a.date)}${a.time?' · '+a.time:''}</td><td>${a.service}</td><td>${a.stylist||'—'}</td><td>${fmtMoney(a.price)}</td><td>${statusBadge(a.status)}</td><td>${a.status==='Completed'?`<button class="btn btn-outline btn-sm btn-icon" onclick="openInvoice('${a.id}')">🧾</button>`:''}</td></tr>`).join('')}
+      </tbody></table></div>`}
+    </div>`;
+  navigate('client-profile');
+}
+function openApptFromClient(){if(activeClientId){const c=S.get('clients').find(x=>x.id===activeClientId);if(c){navigate('appointments');setTimeout(()=>{openApptModal();document.getElementById('apptClient').value=c.name;document.getElementById('apptPhone').value=c.phone;document.getElementById('apptWA').value=c.wa;document.getElementById('apptEmail').value=c.email;if(c.prefService)document.getElementById('apptService').value=c.prefService;if(c.prefStylist)document.getElementById('apptStylist').value=c.prefStylist;},200);}}}
+function autofillClientData(name){
+  if(!name||name.length<2)return;
+  const clients=S.get('clients');
+  const match=clients.find(c=>c.name.toLowerCase().startsWith(name.toLowerCase()));
+  if(match){
+    if(!document.getElementById('apptPhone').value)document.getElementById('apptPhone').value=match.phone||'';
+    if(!document.getElementById('apptWA').value)document.getElementById('apptWA').value=match.wa||'';
+    if(!document.getElementById('apptEmail').value)document.getElementById('apptEmail').value=match.email||'';
+  }
+}
+function renderClients(){
+  const clients=S.get('clients'),appts=S.get('appts'),staff=S.get('staff');
+  const search=(document.getElementById('clientSearch').value||'').toLowerCase();
+  const stylistF=document.getElementById('clientStylistFilter').value;
+  // Populate stylist filter
+  const sel=document.getElementById('clientStylistFilter');
+  const curVal=sel.value;
+  sel.innerHTML='<option value="">All Stylists</option>'+staff.map(s=>`<option value="${s.name}">${s.name}</option>`).join('');
+  if(curVal)sel.value=curVal;
+  const filtered=clients.filter(c=>(!search||c.name.toLowerCase().includes(search)||c.phone.includes(search))&&(!stylistF||c.prefStylist===stylistF));
+  document.getElementById('clientEmpty').style.display=filtered.length===0?'block':'none';
+  document.getElementById('clientGrid').innerHTML=filtered.map(c=>{
+    const clientAppts=appts.filter(a=>a.client.toLowerCase()===c.name.toLowerCase()&&a.status==='Completed');
+    const totalSpent=clientAppts.reduce((s,a)=>s+(a.price||0),0);
+    const lastVisit=clientAppts[0];
+    const initials=c.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+    return`<div class="client-card" onclick="viewClientProfile('${c.id}')">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <div class="client-avatar">${initials}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:600;font-size:.88rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${c.name}</div>
+          <div class="text-muted text-sm">${c.phone||'—'}</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px">
+        <span class="badge badge-gold">${c.prefService||'—'}</span>
+        ${c.hairNotes?'<span class="badge badge-purple">Hair Notes</span>':''}
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:.75rem;color:var(--text3)">
+        <span>${clientAppts.length} visit${clientAppts.length!==1?'s':''} · ${fmtMoney(totalSpent)}</span>
+        <span>${lastVisit?fmtDate(lastVisit.date):'No visits'}</span>
+      </div>
+      <div style="display:flex;gap:5px;margin-top:8px" onclick="event.stopPropagation()">
+        ${c.wa?`<button class="btn btn-whatsapp btn-sm btn-icon" onclick="window.open(buildWA('${c.wa}','Hi ${c.name}!'),'_blank')" title="WhatsApp">💬</button>`:''}
+        <button class="btn btn-outline btn-sm btn-icon" onclick="openClientModal('${c.id}')" title="Edit">✏️</button>
+        <button class="btn btn-danger btn-sm btn-icon" onclick="deleteClient('${c.id}')" title="Delete">🗑</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── INVENTORY ──────────────────────────────────────────
+let editInvId=null;
+function openInvModal(id){
+  editInvId=id||null;
+  const items=S.get('inv'),item=id?items.find(i=>i.id===id):null;
+  document.getElementById('invModalTitle').textContent=id?'Edit Item':'Add Item';
+  document.getElementById('invName').value=item?item.name:'';
+  document.getElementById('invCat').value=item?item.category:'Braiding Hair';
+  document.getElementById('invQty').value=item?item.qty:'';
+  document.getElementById('invUnit').value=item?item.unit:'packs';
+  document.getElementById('invThreshold').value=item?item.threshold:5;
+  document.getElementById('invReorder').value=item?(item.reorder||20):20;
+  document.getElementById('invSupplier').value=item?item.supplier||'':'';
+  openModal('invModal');
+}
+function saveInvItem(){
+  const name=document.getElementById('invName').value.trim();
+  if(!name){alert('Item name required.');return;}
+  const items=S.get('inv');
+  const obj={name,category:document.getElementById('invCat').value,qty:parseInt(document.getElementById('invQty').value)||0,unit:document.getElementById('invUnit').value,threshold:parseInt(document.getElementById('invThreshold').value)||5,reorder:parseInt(document.getElementById('invReorder').value)||20,supplier:document.getElementById('invSupplier').value.trim()};
+  if(editInvId){const idx=items.findIndex(i=>i.id===editInvId);items[idx]={...items[idx],...obj};}
+  else items.push({...obj,id:uid()});
+  S.set('inv',items);closeModal('invModal');renderInventory();
+  if(obj.qty<obj.threshold){addNotif(`⚠️ Low stock: ${obj.name} (${obj.qty} ${obj.unit})`);sendBrowserNotif('Low Stock Alert',obj.name);}
+}
+function deleteInv(id){if(!confirm('Delete?'))return;S.set('inv',S.get('inv').filter(i=>i.id!==id));renderInventory();}
+function renderInventory(){
+  const items=S.get('inv');
+  const search=document.getElementById('invSearch').value.toLowerCase();
+  const cat=document.getElementById('invCatFilter').value;
+  const filtered=items.filter(i=>(!search||i.name.toLowerCase().includes(search))&&(!cat||i.category===cat));
+  document.getElementById('invEmpty').style.display=filtered.length===0?'block':'none';
+  document.getElementById('invTableBody').innerHTML=filtered.map(i=>{const low=i.qty<i.threshold;return`<tr><td style="font-weight:500">${i.name}${i.supplier?`<div class="text-muted text-sm">${i.supplier}</div>`:''}</td><td><span class="badge badge-gold">${i.category}</span></td><td style="${low?'color:var(--warn);font-weight:600':''}">${i.qty}</td><td class="text-muted">${i.unit}</td><td class="text-muted">${i.threshold}</td><td class="text-muted">${i.reorder||'—'}</td><td>${low?'<span class="badge badge-warn pulse-warn">⚠ Low</span>':'<span class="badge badge-success">OK</span>'}</td><td><button class="btn btn-outline btn-sm btn-icon" onclick="openInvModal('${i.id}')">✏️</button><button class="btn btn-danger btn-sm btn-icon" style="margin-left:3px" onclick="deleteInv('${i.id}')">🗑</button></td></tr>`;}).join('');
+}
+
+// ── ROLES SYSTEM ───────────────────────────────────────
+const DEFAULT_ROLES = ['Braider','Apprentice','Receptionist'];
+
+function getRoles() {
+  const saved = S.get('sp_roles');
+  if (!saved || saved.length === 0) {
+    S.set('sp_roles', DEFAULT_ROLES.map(r=>({id:r.toLowerCase().replace(/\s+/g,'_'),name:r,isDefault:true})));
+    return S.get('sp_roles');
+  }
+  return saved;
+}
+
+function saveRoles(roles) { S.set('sp_roles', roles); }
+
+function addCustomRole() {
+  const input = document.getElementById('newRoleInput');
+  const name  = input.value.trim();
+  if (!name) { showToast('⚠ Enter a role name.'); return; }
+  const roles = getRoles();
+  if (roles.find(r => r.name.toLowerCase() === name.toLowerCase())) {
+    showToast('⚠ That role already exists.'); return;
+  }
+  roles.push({ id: 'custom_'+uid(), name, isDefault: false });
+  saveRoles(roles);
+  input.value = '';
+  renderRolesList();
+  showToast(`✓ Role "${name}" added.`);
+}
+
+function deleteCustomRole(roleId) {
+  const roles = getRoles();
+  const role  = roles.find(r=>r.id===roleId);
+  if (!role || role.isDefault) { showToast('⚠ Default roles cannot be deleted.'); return; }
+  if (!confirm(`Delete role "${role.name}"?`)) return;
+  saveRoles(roles.filter(r=>r.id!==roleId));
+  renderRolesList();
+  renderStaff();
+  showToast(`Role "${role.name}" removed.`);
+}
+
+function toggleRolesPanel() {
+  const body    = document.getElementById('rolesPanelBody');
+  const toggle  = document.getElementById('rolesPanelToggle');
+  const open    = body.style.display === 'block';
+  body.style.display  = open ? 'none' : 'block';
+  toggle.textContent  = open ? '▼ Expand' : '▲ Collapse';
+  if (!open) renderRolesList();
+}
+
+function renderRolesList() {
+  const roles = getRoles();
+  const el    = document.getElementById('rolesList');
+  el.innerHTML = roles.map(r => `
+    <div class="role-row">
+      <div class="role-row-name">
+        <span class="role-chip ${r.isDefault?'default':'custom'}">${r.name}</span>
+        <span class="role-row-type">${r.isDefault?'Built-in':'Custom'}</span>
+      </div>
+      ${!r.isDefault
+        ? `<button class="btn btn-danger btn-sm btn-icon" onclick="deleteCustomRole('${r.id}')" title="Delete role">🗑</button>`
+        : `<span style="font-size:.7rem;color:var(--text3);padding:4px 8px">Protected</span>`
+      }
+    </div>`).join('');
+}
+
+// ── STAFF ──────────────────────────────────────────────
+let editStaffId = null;
+
+function openAddStaffModal(id) {
+  editStaffId = id || null;
+  const staff  = S.get('staff');
+  const roles  = getRoles();
+  const member = id ? staff.find(s=>s.id===id) : null;
+
+  document.getElementById('staffModalTitle').textContent = id ? 'Edit Staff Member' : 'Add Staff Member';
+  document.getElementById('staffSaveBtn').textContent    = id ? 'Save Changes' : 'Add Staff';
+  document.getElementById('staffName').value  = member ? member.name  : '';
+  document.getElementById('staffPhone').value = member ? member.phone : '';
+  document.getElementById('staffWA').value    = member ? member.wa    : '';
+  document.getElementById('staffEmail').value = member ? member.email : '';
+
+  // Primary role dropdown — all roles
+  const sel = document.getElementById('staffRole');
+  sel.innerHTML = roles.map(r=>`<option value="${r.name}" ${member&&member.role===r.name?'selected':''}>${r.name}</option>`).join('');
+
+  // Additional roles checklist — all roles except the primary
+  const currentRoles = member ? (member.roles || [member.role]) : [];
+  document.getElementById('staffRolesChecklist').innerHTML = roles.map(r => {
+    const checked = currentRoles.includes(r.name);
+    return `<label class="role-check-item" style="cursor:pointer;display:flex;align-items:center;gap:8px;min-width:120px">
+      <div class="rcb ${checked?'checked':''}" id="rcb_${r.id}" onclick="toggleModalRoleCheck('${r.id}',this)">${checked?'✓':''}</div>
+      <span class="rcb-label">${r.name}</span>
+    </label>`;
+  }).join('');
+
+  openModal('addStaffModal');
+}
+
+function toggleModalRoleCheck(roleId, el) {
+  el.classList.toggle('checked');
+  el.textContent = el.classList.contains('checked') ? '✓' : '';
+}
+
+function getSelectedModalRoles() {
+  const roles  = getRoles();
+  const checks = document.getElementById('staffRolesChecklist').querySelectorAll('.rcb');
+  const selected = [];
+  roles.forEach((r, i) => { if (checks[i] && checks[i].classList.contains('checked')) selected.push(r.name); });
+  return selected;
+}
+
+function saveStaff() {
+  const name = document.getElementById('staffName').value.trim();
+  if (!name) { alert('Name required.'); return; }
+  const primaryRole    = document.getElementById('staffRole').value;
+  const additionalRoles = getSelectedModalRoles();
+  // Merge: always include primary role in roles array
+  const allRoles = [...new Set([primaryRole, ...additionalRoles])];
+  const staff = S.get('staff');
+  const obj   = {
+    name,
+    role:  primaryRole,
+    roles: allRoles,
+    phone: document.getElementById('staffPhone').value.trim(),
+    wa:    document.getElementById('staffWA').value.trim(),
+    email: document.getElementById('staffEmail').value.trim(),
+  };
+  if (editStaffId) {
+    const idx = staff.findIndex(s=>s.id===editStaffId);
+    staff[idx] = { ...staff[idx], ...obj };
+    showToast(`✓ ${name} updated.`);
+  } else {
+    staff.push({ ...obj, id: uid() });
+    showToast(`✓ ${name} added.`);
+    addNotif(`👩‍💼 New staff member: ${name} (${allRoles.join(', ')})`);
+  }
+  S.set('staff', staff);
+  closeModal('addStaffModal');
+  renderStaff();
+}
+
+function deleteStaff(id) {
+  if (!confirm('Remove this staff member?')) return;
+  S.set('staff', S.get('staff').filter(s=>s.id!==id));
+  renderStaff();
+}
+
+function toggleStaffRoleChecklist(staffId) {
+  const el = document.getElementById('rcl_'+staffId);
+  if (!el) return;
+  el.classList.toggle('open');
+}
+
+function toggleStaffRole(staffId, roleName) {
+  if (!isOwner()) return;
+  const staff  = S.get('staff');
+  const member = staff.find(s=>s.id===staffId);
+  if (!member) return;
+  if (!member.roles) member.roles = [member.role];
+  const idx = member.roles.indexOf(roleName);
+  if (idx === -1) member.roles.push(roleName);
+  else {
+    if (member.roles.length === 1) { showToast('⚠ Staff must have at least one role.'); return; }
+    member.roles.splice(idx, 1);
+  }
+  // Keep primary role in sync with first in array
+  member.role = member.roles[0];
+  S.set('staff', staff);
+  renderStaff();
+}
+
+function openAttModal() {
+  const staff = S.get('staff');
+  document.getElementById('attStaff').innerHTML = staff.map(s=>`<option value="${s.id}">${s.name} (${s.role})</option>`).join('');
+  document.getElementById('attDate').value = today();
+  ['attIn','attOut','attNote'].forEach(id=>document.getElementById(id).value='');
+  openModal('attModal');
+}
+function openTaskModal() {
+  const staff = S.get('staff');
+  document.getElementById('taskStaff').innerHTML = '<option value="">All Staff</option>'+staff.map(s=>`<option value="${s.id}">${s.name}</option>`).join('');
+  ['taskTitle','taskNote'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('taskDue').value = today();
+  document.getElementById('taskTime').value = '';
+  document.getElementById('taskPriority').value = 'Normal';
+  openModal('taskModal');
+}
+function saveAtt() {
+  const date = document.getElementById('attDate').value;
+  if (!date) { alert('Date required.'); return; }
+  const att = S.get('att');
+  att.push({ id:uid(), staffId:document.getElementById('attStaff').value, date, in:document.getElementById('attIn').value, out:document.getElementById('attOut').value, note:document.getElementById('attNote').value });
+  S.set('att', att); closeModal('attModal'); renderStaff(); addNotif(`✅ Attendance logged`);
+}
+function deleteAtt(id) { S.set('att', S.get('att').filter(a=>a.id!==id)); renderStaff(); }
+function calcHours(i,o) { if(!i||!o)return 0; const[ih,im]=i.split(':').map(Number),[oh,om]=o.split(':').map(Number),h=(oh*60+om-ih*60-im)/60; return h>0?h:0; }
+function saveTask() {
+  const title = document.getElementById('taskTitle').value.trim();
+  if (!title) { alert('Task title required.'); return; }
+  const tasks = S.get('tasks');
+  const t = { id:uid(), title, assignedTo:document.getElementById('taskStaff').value, due:document.getElementById('taskDue').value, time:document.getElementById('taskTime').value, priority:document.getElementById('taskPriority').value, note:document.getElementById('taskNote').value, done:false, createdAt:Date.now() };
+  tasks.push(t); S.set('tasks',tasks); closeModal('taskModal'); renderStaff();
+  const staff=S.get('staff'),m=t.assignedTo?staff.find(s=>s.id===t.assignedTo):null;
+  addNotif(`📋 Task: "${title}" for ${m?m.name:'All Staff'}`); sendBrowserNotif('New Task',title); showToast(`✓ Task added`);
+}
+function toggleTask(id) { const tasks=S.get('tasks'),t=tasks.find(x=>x.id===id); if(t){t.done=!t.done;if(t.done)addNotif(`✅ Task done: "${t.title}"`);} S.set('tasks',tasks); renderStaff(); }
+function deleteTask(id) { if(!confirm('Delete task?'))return; S.set('tasks',S.get('tasks').filter(t=>t.id!==id)); renderStaff(); }
+
+function renderStaff() {
+  const staff  = S.get('staff');
+  const att    = S.get('att');
+  const tasks  = S.get('tasks');
+  const roles  = getRoles();
+  const tod    = today();
+  const owner  = isOwner();
+
+  // ── Staff Cards Grid ────────────────────────────────
+  const gridEl   = document.getElementById('staffGrid');
+  const emptyEl  = document.getElementById('staffEmpty');
+  emptyEl.style.display = staff.length === 0 ? 'block' : 'none';
+  gridEl.innerHTML = staff.map(s => {
+    const memberRoles = s.roles || [s.role];
+    const roleBadges  = memberRoles.map(r => `<span class="role-chip">${r}</span>`).join('');
+    // Role checklist (owner only)
+    const checklistHtml = owner ? `
+      <div class="role-checklist" id="rcl_${s.id}">
+        <div class="role-checklist-title">Assign Roles</div>
+        ${roles.map(r => {
+          const has = memberRoles.includes(r.name);
+          return `<div class="role-check-item" onclick="toggleStaffRole('${s.id}','${r.name}')">
+            <div class="rcb ${has?'checked':''}">${has?'✓':''}</div>
+            <span class="rcb-label">${r.name}</span>
+          </div>`;
+        }).join('')}
+      </div>` : '';
+    return `<div class="staff-card">
+      <div class="staff-card-header">
+        <div>
+          <div class="staff-card-name">${s.name}</div>
+          <div class="staff-card-contact">${s.phone||''}${s.email?' · '+s.email:''}</div>
+        </div>
+        <div style="display:flex;gap:5px;align-items:center">
+          ${owner ? `
+            <button class="btn btn-outline btn-sm btn-icon" onclick="openAddStaffModal('${s.id}')" title="Edit">✏️</button>
+            <button class="btn btn-danger btn-sm btn-icon" onclick="deleteStaff('${s.id}')" title="Remove">🗑</button>
+          ` : ''}
+        </div>
+      </div>
+      <div class="role-tag-wrap" style="margin-bottom:8px">${roleBadges}</div>
+      ${owner ? `<button class="btn btn-outline btn-sm" style="width:100%;justify-content:center;font-size:.72rem" onclick="toggleStaffRoleChecklist('${s.id}')">🎭 Manage Roles</button>` : ''}
+      ${checklistHtml}
+    </div>`;
+  }).join('');
+
+  // ── Today's Attendance ──────────────────────────────
+  const todayAtt = att.filter(a=>a.date===tod);
+  document.getElementById('todayAtt').innerHTML = todayAtt.length===0
+    ? '<div class="text-muted text-sm" style="padding:12px 0">No attendance logged today.</div>'
+    : todayAtt.map(a=>{
+        const m   = staff.find(s=>s.id===a.staffId);
+        const hrs = calcHours(a.in, a.out);
+        return `<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border)">
+          <div>
+            <div style="font-weight:500;font-size:.83rem">${m?m.name:'—'}</div>
+            <div class="text-muted text-sm">${a.in||'—'} → ${a.out||'ongoing'}${hrs>0?' · '+hrs.toFixed(1)+'h':''}</div>
+          </div>
+          <button class="btn btn-danger btn-sm btn-icon" onclick="deleteAtt('${a.id}')">🗑</button>
+        </div>`;
+      }).join('');
+
+  // ── Tasks ───────────────────────────────────────────
+  const pc = { Urgent:'var(--danger)', High:'var(--warn)', Normal:'var(--text3)' };
+  const tEl = document.getElementById('taskList');
+  const pending = tasks.filter(t=>!t.done), done = tasks.filter(t=>t.done);
+  const renderT = t => {
+    const m = t.assignedTo ? staff.find(s=>s.id===t.assignedTo) : null;
+    const overdue = t.due && t.due < tod && !t.done;
+    return `<div class="task-item">
+      <div class="task-check ${t.done?'done':''}" onclick="toggleTask('${t.id}')">${t.done?'✓':''}</div>
+      <div class="task-body">
+        <div class="task-title ${t.done?'done':''}">${t.title}</div>
+        <div class="task-meta">
+          ${m?`<span>${m.name}</span> · `:''}
+          <span>${fmtDate(t.due)}${t.time?' at '+t.time:''}</span>
+          <span style="color:${pc[t.priority]||'var(--text3)'}"> · ${t.priority}</span>
+          ${overdue?'<span style="color:var(--danger)"> · OVERDUE</span>':''}
+        </div>
+        ${t.note?`<div class="text-muted text-sm" style="margin-top:2px">${t.note}</div>`:''}
+      </div>
+      <button class="btn btn-danger btn-sm btn-icon" onclick="deleteTask('${t.id}')">🗑</button>
+    </div>`;
+  };
+  tEl.innerHTML = tasks.length === 0
+    ? '<div class="empty-state" style="padding:20px"><div class="e-icon">📋</div><p>No tasks. Click "+ Task" to add one.</p></div>'
+    : `${pending.map(renderT).join('')}${done.length?`<div style="color:var(--text3);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;padding:10px 0 4px">Completed</div>${done.map(renderT).join('')}`:''}`;
+
+  // ── Monthly summary dropdown ─────────────────────────
+  const months = [...new Set(att.map(a=>monthKey(a.date)).filter(Boolean))].sort().reverse();
+  const sel    = document.getElementById('attMonthFilter');
+  const curVal = sel.value, curM = monthKey(today());
+  if (!months.includes(curM)) months.unshift(curM);
+  sel.innerHTML = months.map(m=>{const[y,mo]=m.split('-');return`<option value="${m}">${new Date(+y,+mo-1).toLocaleString('en-US',{month:'long',year:'numeric'})}</option>`;}).join('');
+  if (curVal && months.includes(curVal)) sel.value = curVal;
+  renderAttSummary();
+}
+
+function renderAttSummary() {
+  const staff  = S.get('staff');
+  const att    = S.get('att');
+  const m      = document.getElementById('attMonthFilter').value;
+  const monthAtt = att.filter(a=>monthKey(a.date)===m);
+  document.getElementById('attSummaryBody').innerHTML = staff.map(s=>{
+    const records  = monthAtt.filter(a=>a.staffId===s.id);
+    const totalHrs = records.reduce((sum,a)=>sum+calcHours(a.in,a.out),0);
+    const days     = records.length;
+    const memberRoles = s.roles || [s.role];
+    const badges   = memberRoles.map(r=>`<span class="role-chip" style="font-size:.6rem;padding:2px 6px">${r}</span>`).join(' ');
+    return `<tr>
+      <td style="font-weight:500">${s.name}</td>
+      <td><div class="role-tag-wrap">${badges}</div></td>
+      <td>${days}</td>
+      <td>${totalHrs.toFixed(1)} h</td>
+      <td>${days>0?(totalHrs/days).toFixed(1)+' h':'—'}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ── APPOINTMENTS ───────────────────────────────────────
+let editApptId=null;
+const SERVICES=['Box Braids','Knotless Twist','Cornrows','Feed-in Braids','Tree Braids','Crochet Braids','Senegalese Twist','Bora Bora','Micro Braids','Sew-in','Wig Replacement','Kids Styles','Other'];
+function openApptModal(id){
+  editApptId=id||null;
+  const staff=S.get('staff'),appts=S.get('appts'),a=id?appts.find(x=>x.id===id):null;
+  document.getElementById('apptModalTitle').textContent=id?'Edit Appointment':'New Appointment';
+  const sel=document.getElementById('apptStylist');
+  sel.innerHTML=staff.map(s=>`<option value="${s.name}">${s.name}</option>`).join('');
+  if(a){document.getElementById('apptClient').value=a.client||'';document.getElementById('apptPhone').value=a.phone||'';document.getElementById('apptWA').value=a.wa||'';document.getElementById('apptEmail').value=a.email||'';document.getElementById('apptService').value=a.service||'Box Braids';sel.value=a.stylist||'';document.getElementById('apptDate').value=a.date||'';document.getElementById('apptTime').value=a.time||'';document.getElementById('apptDur').value=a.duration||2;document.getElementById('apptPrice').value=a.price||'';document.getElementById('apptDeposit').value=a.deposit||30;document.getElementById('apptPayMethod').value=a.payMethod||'Cash';document.getElementById('apptStatus').value=a.status||'Pending';}
+  else{['apptClient','apptPhone','apptWA','apptEmail','apptTime','apptPrice'].forEach(x=>document.getElementById(x).value='');document.getElementById('apptDate').value=today();document.getElementById('apptDur').value=2;document.getElementById('apptDeposit').value=30;document.getElementById('apptPayMethod').value='Cash';document.getElementById('apptStatus').value='Pending';}
+  const sfEl=document.getElementById('apptServiceFilter');if(sfEl.options.length<=1)sfEl.innerHTML='<option value="">All Services</option>'+SERVICES.map(s=>`<option>${s}</option>`).join('');
+  openModal('apptModal');
+}
+function saveAppt(){
+  const client=document.getElementById('apptClient').value.trim();if(!client){alert('Client name required.');return;}
+  const appts=S.get('appts');
+  const obj={client,phone:document.getElementById('apptPhone').value.trim(),wa:document.getElementById('apptWA').value.trim(),email:document.getElementById('apptEmail').value.trim(),service:document.getElementById('apptService').value,stylist:document.getElementById('apptStylist').value,date:document.getElementById('apptDate').value,time:document.getElementById('apptTime').value,duration:parseFloat(document.getElementById('apptDur').value)||2,price:parseFloat(document.getElementById('apptPrice').value)||0,deposit:parseFloat(document.getElementById('apptDeposit').value)||30,payMethod:document.getElementById('apptPayMethod').value,status:document.getElementById('apptStatus').value};
+  if(editApptId){const idx=appts.findIndex(a=>a.id===editApptId);appts[idx]={...appts[idx],...obj};}
+  else{appts.push({...obj,id:uid()});addNotif(`📅 New appt: ${client} — ${obj.service} on ${fmtDate(obj.date)}`);}
+  S.set('appts',appts);closeModal('apptModal');renderAppts();
+}
+function deleteAppt(id){if(!confirm('Delete?'))return;S.set('appts',S.get('appts').filter(a=>a.id!==id));renderAppts();}
+function confirmBookingRequest(reqId){
+  const reqs=S.get('booking_requests'),req=reqs.find(r=>r.id===reqId);if(!req)return;
+  const appts=S.get('appts');
+  appts.push({...req,id:uid(),deposit:30,payMethod:'Cash',status:'Pending',duration:2,price:0});
+  S.set('appts',appts);
+  const updated=reqs.map(r=>r.id===reqId?{...r,status:'confirmed'}:r);
+  S.set('booking_requests',updated);
+  renderAppts();showToast(`✓ Booking confirmed for ${req.client}`);
+}
+function declineBookingRequest(reqId){
+  const reqs=S.get('booking_requests');
+  S.set('booking_requests',reqs.map(r=>r.id===reqId?{...r,status:'declined'}:r));
+  renderAppts();showToast('Booking request declined.');
+}
+function renderAppts(){
+  const appts=S.get('appts');
+  const sfEl=document.getElementById('apptServiceFilter');if(sfEl.options.length<=1)sfEl.innerHTML='<option value="">All Services</option>'+SERVICES.map(s=>`<option>${s}</option>`).join('');
+  const search=(document.getElementById('apptSearch').value||'').toLowerCase();
+  const status=document.getElementById('apptStatusFilter').value;
+  const service=document.getElementById('apptServiceFilter').value;
+  const date=document.getElementById('apptDateFilter').value;
+  const filtered=appts.filter(a=>(!search||a.client.toLowerCase().includes(search))&&(!status||a.status===status)&&(!service||a.service===service)&&(!date||a.date===date)).sort((a,b)=>(b.date||'')>(a.date||'')?1:-1);
+  document.getElementById('apptEmpty').style.display=filtered.length===0?'block':'none';
+  document.getElementById('apptTableBody').innerHTML=filtered.map(a=>`<tr>
+    <td><div style="font-weight:500">${a.client}</div><div class="text-muted text-sm">${a.phone||''}</div></td>
+    <td>${a.service}</td><td>${a.stylist||'—'}</td>
+    <td>${fmtDate(a.date)}${a.time?' · '+a.time:''}</td>
+    <td>${fmtMoney(a.price)}</td>
+    <td>${statusBadge(a.status)}</td>
+    <td><div class="reminder-group">
+      <button class="btn btn-whatsapp btn-sm btn-icon" title="WhatsApp" onclick="sendClientReminder('${a.id}','whatsapp')">💬</button>
+      <button class="btn btn-email btn-sm btn-icon" title="Email" onclick="sendClientReminder('${a.id}','email')">✉️</button>
+    </div></td>
+    <td>${a.status==='Completed'?`<button class="btn btn-outline btn-sm btn-icon" onclick="openInvoice('${a.id}')" title="Invoice">🧾</button>`:''}</td>
+    <td>
+      <button class="btn btn-outline btn-sm btn-icon" onclick="openApptModal('${a.id}')">✏️</button>
+      <button class="btn btn-danger btn-sm btn-icon" style="margin-left:3px" onclick="deleteAppt('${a.id}')">🗑</button>
+    </td>
+  </tr>`).join('');
+  // Booking requests
+  const reqs=S.get('booking_requests').filter(r=>r.status==='pending_request');
+  const bc=document.getElementById('bookingReqCount');
+  bc.textContent=reqs.length;bc.style.display=reqs.length?'inline-flex':'none';
+  const brEl=document.getElementById('bookingRequests');
+  brEl.innerHTML=reqs.length===0?'<div class="text-muted text-sm" style="padding:12px 0">No pending booking requests.</div>':reqs.map(r=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:8px">
+    <div><div style="font-weight:500;font-size:.85rem">${r.client}</div><div class="text-muted text-sm">${r.service} · ${fmtDate(r.date)}${r.time?' at '+r.time:''}</div><div class="text-muted text-sm">${r.phone}${r.note?' · "'+r.note+'"':''}</div></div>
+    <div style="display:flex;gap:6px"><button class="btn btn-gold btn-sm" onclick="confirmBookingRequest('${r.id}')">✓ Confirm</button><button class="btn btn-danger btn-sm" onclick="declineBookingRequest('${r.id}')">✕ Decline</button></div>
+  </div>`).join('');
+}
+
+// ── REVENUE ────────────────────────────────────────────
+function renderRevenue(){
+  const appts=S.get('appts');
+  const sel=document.getElementById('revMonthFilter');
+  const months=[...new Set(appts.map(a=>monthKey(a.date)).filter(Boolean))].sort().reverse();
+  const curM=monthKey(today());if(!months.includes(curM))months.unshift(curM);
+  const curVal=sel.value||curM;
+  sel.innerHTML=months.map(m=>{const[y,mo]=m.split('-');return`<option value="${m}" ${m===curVal?'selected':''}>${new Date(+y,+mo-1).toLocaleString('en-US',{month:'long',year:'numeric'})}</option>`;}).join('');
+  const m=sel.value||curM,monthAppts=appts.filter(a=>monthKey(a.date)===m);
+  const completed=monthAppts.filter(a=>a.status==='Completed');
+  const totalRev=completed.reduce((s,a)=>s+(a.price||0),0);
+  const totalDep=monthAppts.reduce((s,a)=>s+(a.deposit||0),0);
+  const totalPend=monthAppts.filter(a=>a.status!=='Completed'&&a.status!=='Cancelled').reduce((s,a)=>s+((a.price||0)-(a.deposit||0)),0);
+  document.getElementById('revStats').innerHTML=`
+    <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-label">Revenue</div><div class="stat-value">${fmtMoney(totalRev)}</div><div class="stat-sub">${completed.length} completed</div></div>
+    <div class="stat-card"><div class="stat-icon">📋</div><div class="stat-label">Deposits</div><div class="stat-value">${fmtMoney(totalDep)}</div></div>
+    <div class="stat-card"><div class="stat-icon">⏳</div><div class="stat-label">Pending</div><div class="stat-value" style="color:var(--warn)">${fmtMoney(totalPend)}</div></div>
+    <div class="stat-card"><div class="stat-icon">❌</div><div class="stat-label">Cancelled</div><div class="stat-value" style="color:var(--danger)">${monthAppts.filter(a=>a.status==='Cancelled').length}</div></div>`;
+  const byDay={};
+  monthAppts.forEach(a=>{if(!a.date)return;if(!byDay[a.date])byDay[a.date]={rev:0,cnt:0,pending:0};if(a.status==='Completed'){byDay[a.date].rev+=a.price||0;byDay[a.date].cnt++;}if(a.status!=='Completed'&&a.status!=='Cancelled')byDay[a.date].pending+=(a.price||0)-(a.deposit||0);});
+  const days=Object.keys(byDay).sort().reverse();
+  document.getElementById('dailyRevEmpty').style.display=days.length===0?'block':'none';
+  document.getElementById('dailyRevBody').innerHTML=days.map(d=>`<tr><td>${fmtDate(d)}</td><td>${byDay[d].cnt}</td><td style="color:var(--gold-light);font-weight:500">${fmtMoney(byDay[d].rev)}</td><td style="color:var(--warn)">${fmtMoney(byDay[d].pending)}</td></tr>`).join('');
+  const methods={};completed.forEach(a=>{const pm=a.payMethod||'Cash';if(!methods[pm])methods[pm]={count:0,total:0};methods[pm].count++;methods[pm].total+=a.price||0;});
+  const mEntries=Object.entries(methods),pmEl=document.getElementById('payMethodBreakdown');
+  if(!mEntries.length){pmEl.innerHTML='<div class="text-muted text-sm" style="padding:12px 0">No completed payments.</div>';}
+  else{const gt=mEntries.reduce((s,[,v])=>s+v.total,0);pmEl.innerHTML=mEntries.map(([method,data])=>{const pct=gt>0?Math.round(data.total/gt*100):0;return`<div style="margin-bottom:14px"><div style="display:flex;justify-content:space-between;margin-bottom:5px;font-size:.83rem"><span style="font-weight:500">${method}</span><span style="color:var(--gold-light)">${fmtMoney(data.total)} <span class="text-muted">(${data.count})</span></span></div><div style="background:var(--bg4);border-radius:4px;height:5px;overflow:hidden"><div style="background:var(--gold);height:100%;width:${pct}%;border-radius:4px"></div></div></div>`;}).join('');}
+  document.getElementById('ledgerEmpty').style.display=monthAppts.length===0?'block':'none';
+  document.getElementById('ledgerBody').innerHTML=[...monthAppts].sort((a,b)=>(b.date||'')>(a.date||'')?1:-1).map(a=>{const bal=(a.price||0)-(a.deposit||0);return`<tr><td style="font-weight:500">${a.client}</td><td>${a.service}</td><td>${fmtDate(a.date)}</td><td>${fmtMoney(a.price)}</td><td>${fmtMoney(a.deposit)}</td><td style="color:${bal>0?'var(--warn)':'var(--success)'}">${fmtMoney(bal)}</td><td><span class="badge badge-grey">${a.payMethod||'—'}</span></td><td>${statusBadge(a.status)}</td></tr>`;}).join('');
+}
+
+// ── EXPENSES ───────────────────────────────────────────
+const EXP_CATS=['Supplies','Rent','Utilities','Payroll','Marketing','Equipment','Maintenance','Insurance','Other'];
+const EXP_COLORS={Supplies:'#7a5a18',Rent:'#1a3a5e',Utilities:'#1a5e38',Payroll:'#5e1a3a',Marketing:'#2a4a1a',Equipment:'#4a2a1a',Maintenance:'#1a4a4a',Insurance:'#3a1a5e',Other:'#3a3a3a'};
+let editExpId=null;
+function openExpModal(id){editExpId=id||null;const expenses=S.get('expenses'),exp=id?expenses.find(e=>e.id===id):null;document.getElementById('expModalTitle').textContent=id?'Edit Expense':'Add Expense';document.getElementById('expDesc').value=exp?exp.desc:'';document.getElementById('expCat').value=exp?exp.cat:'Supplies';document.getElementById('expAmount').value=exp?exp.amount:'';document.getElementById('expDate').value=exp?exp.date:today();document.getElementById('expPaidBy').value=exp?exp.paidBy:'Cash';document.getElementById('expReceipt').value=exp?exp.receipt||'':'';document.getElementById('expNote').value=exp?exp.note||'':'';openModal('expModal');}
+function saveExpense(){const desc=document.getElementById('expDesc').value.trim();const amount=parseFloat(document.getElementById('expAmount').value);if(!desc){alert('Description required.');return;}if(isNaN(amount)||amount<=0){alert('Valid amount required.');return;}const expenses=S.get('expenses');const obj={desc,amount,cat:document.getElementById('expCat').value,date:document.getElementById('expDate').value,paidBy:document.getElementById('expPaidBy').value,receipt:document.getElementById('expReceipt').value.trim(),note:document.getElementById('expNote').value.trim()};if(editExpId){const idx=expenses.findIndex(e=>e.id===editExpId);expenses[idx]={...expenses[idx],...obj};}else{expenses.push({...obj,id:uid()});addNotif(`💸 Expense: ${desc} — ${fmtMoney(amount)}`);}S.set('expenses',expenses);closeModal('expModal');renderExpenses();}
+function deleteExpense(id){if(!confirm('Delete?'))return;S.set('expenses',S.get('expenses').filter(e=>e.id!==id));renderExpenses();}
+function renderExpenses(){
+  const expenses=S.get('expenses');
+  const sel=document.getElementById('expMonthFilter');
+  const months=[...new Set(expenses.map(e=>monthKey(e.date)).filter(Boolean))].sort().reverse();
+  const curM=monthKey(today());if(!months.includes(curM))months.unshift(curM);
+  const curVal=sel.value||curM;
+  sel.innerHTML=months.map(m=>{const[y,mo]=m.split('-');return`<option value="${m}" ${m===curVal?'selected':''}>${new Date(+y,+mo-1).toLocaleString('en-US',{month:'long',year:'numeric'})}</option>`;}).join('');
+  const m=sel.value||curM;
+  const search=(document.getElementById('expSearch').value||'').toLowerCase();
+  const catF=document.getElementById('expCatFilter').value;
+  const monthExp=expenses.filter(e=>monthKey(e.date)===m);
+  const filtered=monthExp.filter(e=>(!search||e.desc.toLowerCase().includes(search)||e.cat.toLowerCase().includes(search))&&(!catF||e.cat===catF)).sort((a,b)=>b.date>a.date?1:-1);
+  const totalExp=monthExp.reduce((s,e)=>s+e.amount,0);
+  const appts=S.get('appts');
+  const monthRev=appts.filter(a=>monthKey(a.date)===m&&a.status==='Completed').reduce((s,a)=>s+(a.price||0),0);
+  const net=monthRev-totalExp;
+  const topCat=EXP_CATS.map(c=>({c,total:monthExp.filter(e=>e.cat===c).reduce((s,e)=>s+e.amount,0)})).sort((a,b)=>b.total-a.total)[0];
+  document.getElementById('expStats').innerHTML=`
+    <div class="stat-card"><div class="stat-icon">💸</div><div class="stat-label">Total Expenses</div><div class="stat-value" style="color:var(--danger)">${fmtMoney(totalExp)}</div><div class="stat-sub">${monthExp.length} records</div></div>
+    <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-label">Revenue</div><div class="stat-value">${fmtMoney(monthRev)}</div></div>
+    <div class="stat-card"><div class="stat-icon">${net>=0?'📈':'📉'}</div><div class="stat-label">Net Profit</div><div class="stat-value ${net>=0?'net-positive':'net-negative'}">${fmtMoney(net)}</div></div>
+    <div class="stat-card"><div class="stat-icon">🏷️</div><div class="stat-label">Top Category</div><div class="stat-value" style="font-size:1rem;margin-top:4px">${topCat&&topCat.total>0?topCat.c:'—'}</div></div>`;
+  const gt=totalExp||1;
+  document.getElementById('expCatBreakdown').innerHTML=EXP_CATS.map(c=>{const total=monthExp.filter(e=>e.cat===c).reduce((s,e)=>s+e.amount,0);if(!total)return'';const pct=Math.round(total/gt*100);return`<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;font-size:.8rem;margin-bottom:4px"><span style="font-weight:500">${c}</span><span style="color:var(--gold-light)">${fmtMoney(total)} <span class="text-muted">(${pct}%)</span></span></div><div style="background:var(--bg4);border-radius:3px;height:5px;overflow:hidden"><div style="background:var(--gold);height:100%;width:${pct}%;border-radius:3px"></div></div></div>`;}).join('');
+  document.getElementById('expEmpty').style.display=filtered.length===0?'block':'none';
+  document.getElementById('expTableBody').innerHTML=filtered.map(e=>`<tr><td>${fmtDate(e.date)}</td><td style="font-weight:500">${e.desc}${e.note?`<div class="text-muted text-sm">${e.note}</div>`:''}</td><td><span class="badge" style="background:${EXP_COLORS[e.cat]||'#333'};color:#e5b84a">${e.cat}</span></td><td style="color:var(--danger);font-weight:600">${fmtMoney(e.amount)}</td><td><span class="badge badge-grey">${e.paidBy}</span></td><td class="text-muted text-sm">${e.receipt||'—'}</td><td><button class="btn btn-outline btn-sm btn-icon" onclick="openExpModal('${e.id}')">✏️</button><button class="btn btn-danger btn-sm btn-icon" style="margin-left:3px" onclick="deleteExpense('${e.id}')">🗑</button></td></tr>`).join('');
+}
+
+// ── PAYROLL ────────────────────────────────────────────
+let editPayStaffId=null;
+function renderPayroll(){
+  const staff=S.get('staff'),att=S.get('att'),appts=S.get('appts'),paySettings=S.getObj('sp_paySettings')||{};
+  const sel=document.getElementById('payrollMonthFilter');
+  const months=[...new Set(att.map(a=>monthKey(a.date)).filter(Boolean))].sort().reverse();
+  const curM=monthKey(today());if(!months.includes(curM))months.unshift(curM);
+  const curVal=sel.value||curM;
+  sel.innerHTML=months.map(m=>{const[y,mo]=m.split('-');return`<option value="${m}" ${m===curVal?'selected':''}>${new Date(+y,+mo-1).toLocaleString('en-US',{month:'long',year:'numeric'})}</option>`;}).join('');
+  const m=sel.value||curM;
+  const monthAtt=att.filter(a=>monthKey(a.date)===m);
+  const monthAppts=appts.filter(a=>monthKey(a.date)===m&&a.status==='Completed');
+  // Pay settings list
+  document.getElementById('paySettingsList').innerHTML=staff.map(s=>{const ps=paySettings[s.id]||{type:'hourly',hourly:15,comm:0};return`<div style="display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border)"><div><div style="font-weight:500;font-size:.85rem">${s.name}</div><div class="text-muted text-sm">${ps.type==='hourly'?`$${ps.hourly}/hr`:ps.type==='commission'?`${ps.comm}% commission`:`$${ps.hourly}/hr + ${ps.comm}% commission`}</div></div><button class="btn btn-outline btn-sm" onclick="openPaySettings('${s.id}')">⚙ Set Pay</button></div>`;}).join('');
+  // Payroll table
+  let totalPayroll=0,totalHours=0;
+  const rows=staff.map(s=>{
+    const ps=paySettings[s.id]||{type:'hourly',hourly:15,comm:0};
+    const records=monthAtt.filter(a=>a.staffId===s.id);
+    const hours=records.reduce((sum,a)=>sum+calcHours(a.in,a.out),0);
+    const days=records.length;
+    const stylistAppts=monthAppts.filter(a=>a.stylist===s.name);
+    const commRevenue=stylistAppts.reduce((sum,a)=>sum+(a.price||0),0);
+    let pay=0;
+    if(ps.type==='hourly')pay=hours*(ps.hourly||0);
+    else if(ps.type==='commission')pay=commRevenue*(ps.comm||0)/100;
+    else pay=hours*(ps.hourly||0)+commRevenue*(ps.comm||0)/100;
+    totalPayroll+=pay;totalHours+=hours;
+    return{s,ps,hours,days,commRevenue,pay};
+  });
+  document.getElementById('payrollStats').innerHTML=`
+    <div class="stat-card"><div class="stat-icon">💵</div><div class="stat-label">Total Payroll</div><div class="stat-value" style="color:var(--danger)">${fmtMoney(totalPayroll)}</div></div>
+    <div class="stat-card"><div class="stat-icon">🕐</div><div class="stat-label">Total Hours</div><div class="stat-value">${totalHours.toFixed(1)}</div></div>
+    <div class="stat-card"><div class="stat-icon">👩‍💼</div><div class="stat-label">Staff Count</div><div class="stat-value">${staff.length}</div></div>
+    <div class="stat-card"><div class="stat-icon">📊</div><div class="stat-label">Avg Pay/Person</div><div class="stat-value">${fmtMoney(staff.length?totalPayroll/staff.length:0)}</div></div>`;
+  document.getElementById('payrollBody').innerHTML=rows.map(r=>`<tr>
+    <td style="font-weight:500">${r.s.name}</td>
+    <td><span class="badge badge-gold">${r.s.role}</span></td>
+    <td>${r.days}</td>
+    <td>${r.hours.toFixed(1)} h</td>
+    <td><span class="badge badge-grey">${r.ps.type}</span></td>
+    <td>${r.ps.type==='commission'?'—':fmtMoney(r.ps.hourly||0)+'/hr'}</td>
+    <td>${r.ps.type==='hourly'?'—':fmtMoney(r.commRevenue)+' ('+r.ps.comm+'%)'}</td>
+    <td style="color:var(--gold-light);font-weight:600">${fmtMoney(r.pay)}</td>
+  </tr>`).join('');
+}
+function openPaySettings(staffId){
+  editPayStaffId=staffId;
+  const staff=S.get('staff'),s=staff.find(x=>x.id===staffId);
+  document.getElementById('paySettingsStaffName').textContent=s?`Setting pay for: ${s.name}`:'';
+  const paySettings=S.getObj('sp_paySettings')||{};
+  const ps=paySettings[staffId]||{type:'hourly',hourly:15,comm:0};
+  document.getElementById('psType').value=ps.type||'hourly';
+  document.getElementById('psHourly').value=ps.hourly||15;
+  document.getElementById('psComm').value=ps.comm||0;
+  togglePayFields();
+  openModal('paySettingsModal');
+}
+function togglePayFields(){
+  const t=document.getElementById('psType').value;
+  document.getElementById('psHourlyRow').style.display=(t==='hourly'||t==='both')?'grid':'none';
+  document.getElementById('psCommRow').style.display=(t==='commission'||t==='both')?'grid':'none';
+}
+function savePaySettings(){
+  const paySettings=S.getObj('sp_paySettings')||{};
+  paySettings[editPayStaffId]={type:document.getElementById('psType').value,hourly:parseFloat(document.getElementById('psHourly').value)||0,comm:parseFloat(document.getElementById('psComm').value)||0};
+  S.setObj('sp_paySettings',paySettings);closeModal('paySettingsModal');renderPayroll();showToast('✓ Pay settings saved.');
+}
+function exportPayrollWA(){
+  const staff=S.get('staff'),att=S.get('att'),appts=S.get('appts'),paySettings=S.getObj('sp_paySettings')||{};
+  const sel=document.getElementById('payrollMonthFilter'),m=sel.value||monthKey(today());
+  const[y,mo]=m.split('-');const monthLabel=new Date(+y,+mo-1).toLocaleString('en-US',{month:'long',year:'numeric'});
+  const monthAtt=att.filter(a=>monthKey(a.date)===m);
+  const monthAppts=appts.filter(a=>monthKey(a.date)===m&&a.status==='Completed');
+  const salon=getCurrentUser()?.salon||'StrandPro';
+  let lines=`💵 *Payroll Summary — ${salon}*\n${monthLabel}\n\n`;
+  let total=0;
+  staff.forEach(s=>{const ps=paySettings[s.id]||{type:'hourly',hourly:15,comm:0};const records=monthAtt.filter(a=>a.staffId===s.id);const hours=records.reduce((sum,a)=>sum+calcHours(a.in,a.out),0);const commRevenue=monthAppts.filter(a=>a.stylist===s.name).reduce((sum,a)=>sum+(a.price||0),0);let pay=0;if(ps.type==='hourly')pay=hours*(ps.hourly||0);else if(ps.type==='commission')pay=commRevenue*(ps.comm||0)/100;else pay=hours*(ps.hourly||0)+commRevenue*(ps.comm||0)/100;total+=pay;lines+=`• ${s.name}: ${hours.toFixed(1)}h → *${fmtMoney(pay)}*\n`;});
+  lines+=`\n*Total: ${fmtMoney(total)}*`;
+  const waNum=prompt('WhatsApp number to send payroll summary:');if(!waNum)return;
+  const link=buildWA(waNum,lines);if(link)window.open(link,'_blank');
+}
+function printPayroll(){window.print();}
+
+// ── BACKGROUND CHECKS ──────────────────────────────────
+function checkDueTasks(){const tasks=S.get('tasks'),tod=today(),now=new Date();const hhmm=`${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;tasks.filter(t=>!t.done&&t.due===tod&&t.time===hhmm).forEach(t=>{const staff=S.get('staff'),m=t.assignedTo?staff.find(s=>s.id===t.assignedTo):null;addNotif(`⏰ Task due now: "${t.title}"${m?' for '+m.name:''}`);sendBrowserNotif('Task Due',t.title);});}
+function checkUpcomingAppts(){const appts=S.get('appts'),tod=today(),now=new Date();appts.filter(a=>a.date===tod&&a.status!=='Cancelled'&&a.status!=='Completed'&&a.time).forEach(a=>{const[h,m]=a.time.split(':').map(Number);const apptTime=new Date(now.getFullYear(),now.getMonth(),now.getDate(),h,m);const diffMin=Math.floor((apptTime-now)/60000);if(diffMin===60){addNotif(`📅 Appointment in 1 hour: ${a.client} — ${a.service}`);sendBrowserNotif('Upcoming Appointment',`${a.client} — ${a.service}`);}});}
+function checkLowStock(){const inv=S.get('inv');inv.filter(i=>i.qty<i.threshold).forEach(i=>addNotif(`⚠️ Low stock: ${i.name} (${i.qty} ${i.unit})`))}
+
+// ── INIT ───────────────────────────────────────────────
+function init(){
+  document.getElementById('topbarDate').textContent=new Date().toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+  document.getElementById('bkDate').value=today();
+  const sfEl=document.getElementById('apptServiceFilter');
+  sfEl.innerHTML='<option value="">All Services</option>'+SERVICES.map(s=>`<option>${s}</option>`).join('');
+  ['attMonthFilter','revMonthFilter','expMonthFilter','payrollMonthFilter'].forEach(id=>{const sel=document.getElementById(id);if(!sel)return;const curM=monthKey(today()),[y,mo]=curM.split('-');sel.innerHTML=`<option value="${curM}">${new Date(+y,+mo-1).toLocaleString('en-US',{month:'long',year:'numeric'})}</option>`;});
+  ensureAdminExists();
+  const session=getCurrentUser();
+  if(session){
+    hideAuthScreen();updateUserUI();applyRoleAccess();
+    initSubscription();checkAccess();seedData();renderDashboard();
+    setTimeout(()=>requestNotifPermission(),3000);
+    checkLowStock();
+    setInterval(checkDueTasks,60000);setInterval(checkUpcomingAppts,60000);
+    checkDueTasks();checkUpcomingAppts();
+  } else {
+    showAuthScreen();
+  }
+}
+init();
+</script>
+</body>
+</html>
