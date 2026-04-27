@@ -60,6 +60,22 @@
       "purpose": "maskable any"
     }
   ],
+  "screenshots": [
+    {
+      "src": "screenshots/desktop-1.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "StrandPro Dashboard on desktop"
+    },
+    {
+      "src": "screenshots/mobile-1.png",
+      "sizes": "375x667",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "StrandPro Dashboard on mobile"
+    }
+  ],
   "shortcuts": [
     {
       "name": "Appointments",
@@ -85,21 +101,4 @@
         }
       ]
     }
-  ],
-  "screenshots": [
-    {
-      "src": "screenshots/desktop-1.png",
-      "sizes": "1280x720",
-      "type": "image/png",
-      "form_factor": "wide",
-      "label": "StrandPro Dashboard on desktop"
-    },
-    {
-      "src": "screenshots/mobile-1.png",
-      "sizes": "375x667",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "StrandPro Dashboard on mobile"
-    }
-  ]
-}
+  ]}
